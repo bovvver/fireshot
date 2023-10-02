@@ -1,11 +1,16 @@
+import NavBar from "../components/organisms/NavBar/NavBar";
 import AppTheme from "../styles/AppTheme";
-import { Typography, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
+import BottomNavBar from "../components/organisms/BottomNavBar/BottomNavBar";
+import Home from "./Home";
 
 const App = () => {
   return (
     <AppTheme>
       <CssBaseline />
-      <Typography component="p">App</Typography>
+      <NavBar />
+      <Home />
+      <BottomNavBar />
     </AppTheme>
   );
 };

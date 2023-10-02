@@ -1,6 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { ReactNode } from "react";
 import { green } from "@mui/material/colors";
+import colors from "./colorTheme";
 
 const theme = createTheme({
   palette: {
@@ -9,7 +10,7 @@ const theme = createTheme({
       main: green[700],
     },
     secondary: {
-      main: "#B8BACF",
+      main: colors.gray,
       //   contrastText: "#fff",
     },
     error: {
