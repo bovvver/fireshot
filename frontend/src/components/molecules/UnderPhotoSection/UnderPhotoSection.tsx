@@ -10,9 +10,9 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import SendIcon from "@mui/icons-material/Send";
-import LikeStats from "../../atoms/LikeStats/LikeStats";
-import PhotoComment from "../../atoms/PhotoComment/PhotoComment";
-import PhotoDate from "../../atoms/PhotoDate/PhotoDate";
+import LikeStats from "@components/atoms/LikeStats/LikeStats";
+import PhotoComment from "@components/atoms/PhotoComment/PhotoComment";
+import PhotoDate from "@components/atoms/PhotoDate/PhotoDate";
 
 const date = new Date("2023-09-01T14:22:00"); // SAMPLE DATE FOR FRONT-END DEVELOPMENT ONLY. DELETE LATER.
 

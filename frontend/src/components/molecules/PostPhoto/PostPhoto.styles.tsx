@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import colors from "../../../styles/colorTheme";
+import colors from "@styles/colorTheme";
 
 export const StyledImage = styled.img`
   width: 100%;

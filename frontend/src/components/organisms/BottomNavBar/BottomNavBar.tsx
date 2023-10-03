@@ -4,9 +4,11 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
 
 const BottomNavBar = () => {
   const [navValue, setNavValue] = useState("home");
+  const navigate = useNavigate();
 
   const handleChange = (_e: SyntheticEvent, newValue: string) => {
     setNavValue(newValue);
@@ -18,7 +20,12 @@ const BottomNavBar = () => {
       elevation={3}
     >
       <BottomNavigation value={navValue} onChange={handleChange}>
-        <BottomNavigationAction value="home" label="Home" icon={<HomeIcon />} />
+        <BottomNavigationAction
+          value="home"
+          label="Home"
+          icon={<HomeIcon />}
+          onClick={() => navigate("/")}
+        />
         <BottomNavigationAction
           value="search"
           label="Search"
@@ -33,6 +40,7 @@ const BottomNavBar = () => {
           value="profile"
           label="Profile"
           icon={<AccountCircleIcon />}
+          onClick={() => navigate("/profile")}
         />
       </BottomNavigation>
     </Paper>

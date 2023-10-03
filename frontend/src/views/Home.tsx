@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import HomePost from "../components/organisms/HomePost/HomePost";
+import HomePost from "@components/organisms/HomePost/HomePost";
 
 const Home = () => {
   return (

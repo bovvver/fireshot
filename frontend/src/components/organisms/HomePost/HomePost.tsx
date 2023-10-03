@@ -1,6 +1,6 @@
 import { Avatar, Box, Paper, Typography } from "@mui/material";
-import PostPhoto from "../../molecules/PostPhoto/PostPhoto";
-import UnderPhotoSection from "../../molecules/UnderPhotoSection/UnderPhotoSection";
+import PostPhoto from "@components/molecules/PostPhoto/PostPhoto";
+import UnderPhotoSection from "@components/molecules/UnderPhotoSection/UnderPhotoSection";
 
 const HomePost = () => {
   return (
