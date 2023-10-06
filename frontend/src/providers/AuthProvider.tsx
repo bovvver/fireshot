@@ -10,7 +10,7 @@ export const AuthContext = createContext<AuthContextInterface>({
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoginFormSelected, setIsLoginFormSelected] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const handleFormSelection = (isLoginForm: boolean) => {
     setIsLoginFormSelected(isLoginForm);

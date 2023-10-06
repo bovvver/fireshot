@@ -20,6 +20,7 @@ const Registration = () => {
   } = useForm({
     defaultValues: {
       email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
@@ -44,6 +45,16 @@ const Registration = () => {
         }}
         errors={errors}
         label="E-mail"
+      />
+
+      <AuthFormInput
+        name="username"
+        control={control as Control<FieldValues>}
+        rules={{
+          required: "Required",
+        }}
+        errors={errors}
+        label="Username"
       />
 
       <AuthFormInput
