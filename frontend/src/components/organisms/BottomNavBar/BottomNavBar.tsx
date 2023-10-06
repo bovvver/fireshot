@@ -1,27 +1,27 @@
-import { SyntheticEvent, useState } from "react";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
+import useBottomNav from "@hooks/useBottomNav";
 
 const BottomNavBar = () => {
-  const [navValue, setNavValue] = useState("home");
+  const { handleModalOpening, bottomNavValue, handleBottomNavValueChange } =
+    useBottomNav();
   const navigate = useNavigate();
-
-  const handleChange = (_e: SyntheticEvent, newValue: string) => {
-    setNavValue(newValue);
-  };
 
   return (
     <Paper
       sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
       elevation={3}
     >
-      <BottomNavigation value={navValue} onChange={handleChange}>
+      <BottomNavigation
+        value={bottomNavValue}
+        onChange={handleBottomNavValueChange}
+      >
         <BottomNavigationAction
-          value="home"
+          value=""
           label="Home"
           icon={<HomeIcon />}
           onClick={() => navigate("/")}
@@ -30,11 +30,15 @@ const BottomNavBar = () => {
           value="search"
           label="Search"
           icon={<SearchIcon />}
+          onClick={() => {
+            handleModalOpening(true);
+          }}
         />
         <BottomNavigationAction
           value="add"
           label="Add"
           icon={<AddCircleOutlineIcon />}
+          onClick={() => navigate("/add")}
         />
         <BottomNavigationAction
           value="profile"

@@ -2,6 +2,7 @@ import { Control, FieldErrors } from "react-hook-form";
 
 export interface FieldValues {
   email: string;
+  username?: string;
   password: string;
   confirmPassword?: string;
 }
@@ -13,4 +14,10 @@ export interface AuthFormInputProps {
   errors: FieldErrors<FieldValues>;
   label: string;
   type?: string;
+}
+
+export interface AvatarUserField {
+  username: string;
+  src?: string;
+  location?: string;
 }
