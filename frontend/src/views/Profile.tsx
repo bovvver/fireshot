@@ -1,4 +1,5 @@
 import ProfileStat from "@components/atoms/ProfileStat/ProfileStat";
+import ProfileStatLink from "@components/atoms/ProfileStatLink/ProfileStatLink";
 import {
   Container,
   Box,
@@ -8,6 +9,7 @@ import {
   ImageList,
   ImageListItem,
 } from "@mui/material";
+import useBottomNav from "@hooks/useBottomNav";
 
 // TODO: Static content for development. Remove later.
 const itemData = [
@@ -63,6 +65,8 @@ const itemData = [
 ];
 
 const Profile = () => {
+  const {handleModalOpening} = useBottomNav();
+
   return (
     <Container maxWidth="md">
       <Box>
@@ -72,8 +76,8 @@ const Profile = () => {
             sx={{ display: "flex", flex: 1, justifyContent: "space-evenly" }}
           >
             <ProfileStat counter={12} title="Posts" />
-            <ProfileStat counter={1265} title="Followers" />
-            <ProfileStat counter={11} title="Following" />
+            <ProfileStatLink counter={1265} title="Followers" onClick={() => { handleModalOpening(true, "Followers") }} />
+            <ProfileStatLink counter={11} title="Following" onClick={() => { handleModalOpening(true, "Following") }} />
           </Box>
         </Box>
         <Typography sx={{ fontWeight: "bold" }}>sampleUser</Typography>

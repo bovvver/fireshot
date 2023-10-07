@@ -21,3 +21,14 @@ export interface AvatarUserField {
   src?: string;
   location?: string;
 }
+
+export interface ProfileStatInterface {
+  counter: number;
+  title: string;
+}
+
+export interface ProfileStatLinkInterface {
+  counter: number;
+  title: string;
+  onClick: () => void;
+}

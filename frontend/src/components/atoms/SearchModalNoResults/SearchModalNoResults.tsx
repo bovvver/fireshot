@@ -10,7 +10,7 @@ const SearchModalNoResults = ({
   return (
     <Box
       sx={{
-        height: 200,
+        height: 350,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

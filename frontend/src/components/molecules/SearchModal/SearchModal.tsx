@@ -20,7 +20,7 @@ const SearchModal = () => {
     <Modal open={isModalOpen} onClose={handleModalClose}>
       <Paper
         sx={{
-          height: 400,
+          height: 500,
           display: "flex",
           flexDirection: "column",
           position: "absolute",
@@ -48,7 +48,7 @@ const SearchModal = () => {
             p: "2px 4px",
             display: "flex",
             alignItems: "center",
-            width: 250,
+            width: 350,
           }}
         >
           <InputBase
