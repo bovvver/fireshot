@@ -12,6 +12,7 @@ import RedirectIfNotAuthenticated from "@components/atoms/RedirectIfNotAuthentic
 import SearchModal from "@components/molecules/SearchModal/SearchModal";
 import AddPhoto from "./AddPhoto";
 import Toast from "@components/atoms/Toast/Toast";
+import Notifications from "@components/organisms/Notifications/Notifications";
 
 const App = () => {
   const location = useLocation();
@@ -54,6 +55,7 @@ const App = () => {
         {shouldShowNavBar ? <BottomNavBar /> : null}
       </Box>
       <SearchModal />
+      <Notifications />
     </AppTheme>
   );
 };

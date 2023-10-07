@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import AuthProvider from "./AuthProvider";
-import SearchModalProvider from "./BottomNavProvider";
+import SearchModalProvider from "./ModalsProvider";
 import ToastProvider from "./ToastProvider";
 
 const ContextProvider = ({ children }: { children: ReactNode }) => {

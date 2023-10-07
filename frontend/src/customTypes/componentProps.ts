@@ -32,3 +32,8 @@ export interface ProfileStatLinkInterface {
   title: string;
   onClick: () => void;
 }
+
+export interface BackButtonInterface {
+  onClick: () => void;
+  value: string;
+}

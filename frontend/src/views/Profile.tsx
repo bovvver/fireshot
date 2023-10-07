@@ -9,7 +9,7 @@ import {
   ImageList,
   ImageListItem,
 } from "@mui/material";
-import useBottomNav from "@hooks/useBottomNav";
+import useModals from "@hooks/useModals";
 
 // TODO: Static content for development. Remove later.
 const itemData = [
@@ -65,7 +65,7 @@ const itemData = [
 ];
 
 const Profile = () => {
-  const {handleModalOpening} = useBottomNav();
+  const { handleModalOpening } = useModals();
 
   return (
     <Container maxWidth="md">
@@ -76,8 +76,20 @@ const Profile = () => {
             sx={{ display: "flex", flex: 1, justifyContent: "space-evenly" }}
           >
             <ProfileStat counter={12} title="Posts" />
-            <ProfileStatLink counter={1265} title="Followers" onClick={() => { handleModalOpening(true, "Followers") }} />
-            <ProfileStatLink counter={11} title="Following" onClick={() => { handleModalOpening(true, "Following") }} />
+            <ProfileStatLink
+              counter={1265}
+              title="Followers"
+              onClick={() => {
+                handleModalOpening(true, "Followers");
+              }}
+            />
+            <ProfileStatLink
+              counter={11}
+              title="Following"
+              onClick={() => {
+                handleModalOpening(true, "Following");
+              }}
+            />
           </Box>
         </Box>
         <Typography sx={{ fontWeight: "bold" }}>sampleUser</Typography>

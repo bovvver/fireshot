@@ -7,14 +7,14 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import useBottomNav from "@hooks/useBottomNav";
+import useModals from "@hooks/useModals";
 import colors from "@styles/colorTheme";
 import SearchIcon from "@mui/icons-material/Search";
 // import SearchModalNoResults from "@components/atoms/SearchModalNoResults/SearchModalNoResults";
 import ModalSearchResult from "@components/atoms/ModalSearchResult/ModalSearchResult";
 
 const SearchModal = () => {
-  const { isModalOpen, handleModalClose, modalTitle } = useBottomNav();
+  const { isModalOpen, handleModalClose, modalTitle } = useModals();
 
   return (
     <Modal open={isModalOpen} onClose={handleModalClose}>

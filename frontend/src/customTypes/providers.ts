@@ -10,7 +10,7 @@ export interface AuthContextInterface {
 
 export type BottomNavValue = "" | "search" | "add" | "profile";
 
-export interface BottomNavContextInterface {
+export interface ModalsContextInterface {
   isModalOpen: boolean;
   handleModalOpening: (isModalOpenParam: boolean, title?: string) => void;
   bottomNavValue: BottomNavValue;
@@ -21,6 +21,8 @@ export interface BottomNavContextInterface {
   handleBottomNavValueClick: (newBottomNavValue: BottomNavValue) => void;
   handleModalClose: () => void;
   modalTitle: string;
+  areNotificationsOpen: boolean;
+  handleNotificationOpen: (newNotificationsState: boolean) => void;
 }
 
 export interface ToastContextInterface {
