@@ -4,7 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import useModals from "@hooks/useModals";
+import { useModals } from "@hooks/contextHooks";
 
 const BottomNavBar = () => {
   const { handleModalOpening, bottomNavValue, handleBottomNavValueChange } =

@@ -1,5 +1,5 @@
 import { Link, Button, Box } from "@mui/material";
-import useAuth from "@hooks/useAuth";
+import { useAuth } from "@hooks/contextHooks";
 import { useForm, Control } from "react-hook-form";
 import { LoginDTO } from "@customTypes/auth";
 import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";

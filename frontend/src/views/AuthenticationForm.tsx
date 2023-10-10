@@ -4,7 +4,7 @@ import Logo from "@components/atoms/Logo/Logo";
 import colors from "@styles/colorTheme";
 import Login from "@components/molecules/Login/Login";
 import Registration from "@components/molecules/Registration/Registration";
-import useAuth from "@hooks/useAuth";
+import { useAuth } from "@hooks/contextHooks";
 import { useNavigate } from "react-router-dom";
 
 const AuthenticationForm = () => {

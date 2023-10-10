@@ -5,7 +5,7 @@ import BackButton from "@components/atoms/BackButton/BackButton";
 // import NoNotifications from "@components/molecules/NoNotifications/NoNotifications";
 import NotificationField from "@components/atoms/NotificationField/NotificationField";
 import DeleteIcon from "@mui/icons-material/Delete";
-import useModals from "@hooks/useModals";
+import { useModals } from "@hooks/contextHooks";
 
 const Notifications = () => {
   const { areNotificationsOpen, handleNotificationOpen } = useModals();

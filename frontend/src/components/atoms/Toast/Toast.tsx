@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import useToast from "@hooks/useToast";
+import { useToast } from "@hooks/contextHooks";
 import { Snackbar, Alert } from "@mui/material";
 
 const Toast = () => {

@@ -1,49 +1,15 @@
-import { SyntheticEvent, ChangeEvent, useState } from "react";
-import {
-  Container,
-  Paper,
-  IconButton,
-  TextField,
-  Button,
-  Box,
-  Tab,
-} from "@mui/material";
+import { SyntheticEvent, useState } from "react";
+import { Container, Paper, TextField, Button, Box, Tab } from "@mui/material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
-import AddIcon from "@mui/icons-material/Add";
 import colors from "@styles/colorTheme";
-import useToast from "@hooks/useToast";
+import AddImageButton from "@components/atoms/AddImageButton/AddImageButton";
 
 function App() {
-  const [backgroundImage, setBackgroundImage] = useState<string>("");
+  const [backgroundImage, setBackgroundImage] = useState("");
   const [currentTab, setCurrentTab] = useState("0");
-  const { handleToastOpening } = useToast();
 
   const handleTabChange = (_e: SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue);
-  };
-
-  const getFileType = (file: string | undefined) => {
-    if (file === undefined || file === null) return null;
-    return file.split(":")[1].split(";")[0];
-  };
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target) {
-          const result = getFileType(event.target.result?.toString());
-
-          if (result === null || !result.includes("image")) {
-            handleToastOpening("Please, select image file.", "warning");
-            return;
-          }
-          setBackgroundImage(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   return (
@@ -98,29 +64,7 @@ function App() {
               backgroundPosition: "center",
             }}
           >
-            <input
-              type="file"
-              accept="image/*"
-              id="image-upload"
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
-            <IconButton
-              sx={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%,-50%)",
-              }}
-              component="label"
-              htmlFor="image-upload"
-            >
-              <AddIcon
-                sx={{
-                  fontSize: "5rem",
-                }}
-              />
-            </IconButton>
+            <AddImageButton setImage={setBackgroundImage} />
           </Paper>
           <Button
             sx={{

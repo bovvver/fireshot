@@ -7,7 +7,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import useModals from "@hooks/useModals";
+import { useModals } from "@hooks/contextHooks";
 import colors from "@styles/colorTheme";
 import SearchIcon from "@mui/icons-material/Search";
 // import SearchModalNoResults from "@components/atoms/SearchModalNoResults/SearchModalNoResults";

@@ -37,3 +37,11 @@ export interface BackButtonInterface {
   onClick: () => void;
   value: string;
 }
+
+export interface ProfileHeaderInterface {
+  loggedUserAccount: boolean;
+}
+
+export interface AddImageButtonInterface {
+  setImage: (image: string) => void;
+}

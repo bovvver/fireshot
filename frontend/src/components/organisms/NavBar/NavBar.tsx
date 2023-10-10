@@ -11,7 +11,7 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import Logo from "@components/atoms/Logo/Logo";
 import { useNavigate } from "react-router-dom";
-import useModals from "@hooks/useModals";
+import { useModals } from "@hooks/contextHooks";
 
 const NavBar = () => {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, ChangeEvent } from "react";
 import { AlertColor } from "@mui/material";
 
 export interface AuthContextInterface {
@@ -31,4 +31,11 @@ export interface ToastContextInterface {
   severity: AlertColor;
   handleToastOpening: (message: string, servity: AlertColor) => void;
   handleToastClosing: () => void;
+}
+
+export interface ImageChangeContextInterface {
+  handleImageChange: (
+    e: ChangeEvent<HTMLInputElement>,
+    setImageFunction: (image: string) => void
+  ) => void;
 }
