@@ -30,6 +30,9 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          scrollBehavior: "smooth",
+        },
         body: {
           "& #root": {
             width: "100%",

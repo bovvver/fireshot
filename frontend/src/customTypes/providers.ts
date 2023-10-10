@@ -23,6 +23,8 @@ export interface ModalsContextInterface {
   modalTitle: string;
   areNotificationsOpen: boolean;
   handleNotificationOpen: (newNotificationsState: boolean) => void;
+  isDrawerOpen: boolean;
+  handleDrawerOpen: (newDrawerState: boolean) => void;
 }
 
 export interface ToastContextInterface {

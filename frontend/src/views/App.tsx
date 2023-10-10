@@ -13,8 +13,11 @@ import SearchModal from "@components/molecules/SearchModal/SearchModal";
 import AddPhoto from "./AddPhoto";
 import Toast from "@components/atoms/Toast/Toast";
 import Notifications from "@components/organisms/Notifications/Notifications";
+import CommentDrawer from "@components/organisms/CommentDrawer/CommentDrawer";
+import { useModals } from "@hooks/contextHooks";
 
 const App = () => {
+  const { isDrawerOpen } = useModals();
   const location = useLocation();
 
   const publicRoutes = [
@@ -56,6 +59,7 @@ const App = () => {
       </Box>
       <SearchModal />
       <Notifications />
+      <CommentDrawer open={isDrawerOpen} />
     </AppTheme>
   );
 };

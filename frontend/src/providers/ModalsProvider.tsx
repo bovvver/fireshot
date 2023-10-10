@@ -12,12 +12,15 @@ export const ModalsContext = createContext<ModalsContextInterface>({
   modalTitle: "",
   areNotificationsOpen: false,
   handleNotificationOpen: () => {},
+  isDrawerOpen: false,
+  handleDrawerOpen: () => {},
 });
 
 const ModalsProvider = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [areNotificationsOpen, setAreNotificationsOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [bottomNavValue, setBottomNavValue] = useState<BottomNavValue>(
     location.pathname.slice(1) as BottomNavValue
   );
@@ -50,6 +53,10 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
     document.body.style.overflowY = newNotificationsState ? "hidden" : "scroll";
   };
 
+  const handleDrawerOpen = (newDrawerState: boolean) => {
+    setIsDrawerOpen(newDrawerState);
+  };
+
   const handleModalClose = () => {
     setBottomNavValue(location.pathname.slice(1) as BottomNavValue);
     handleModalOpening(false);
@@ -67,6 +74,8 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
         modalTitle,
         areNotificationsOpen,
         handleNotificationOpen,
+        isDrawerOpen,
+        handleDrawerOpen,
       }}
     >
       {children}

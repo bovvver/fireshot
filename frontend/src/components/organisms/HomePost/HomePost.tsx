@@ -15,7 +15,9 @@ const HomePost = ({ username, src = "", location = "" }: AvatarUserField) => {
           alignItems: "center",
         }}
       >
-        <Avatar src={src} sx={{ marginRight: 1, width: 30, height: 30 }}>{username[0].toUpperCase()}</Avatar>
+        <Avatar src={src} sx={{ marginRight: 1, width: 30, height: 30 }}>
+          {username[0].toUpperCase()}
+        </Avatar>
         <Box>
           <Typography sx={{ lineHeight: "150%" }}>{username}</Typography>
           <Typography sx={{ fontSize: "0.8em", lineHeight: "90%" }}>
