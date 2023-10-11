@@ -1,11 +1,10 @@
-import { createPortal } from "react-dom";
 import { useToast } from "@hooks/contextHooks";
 import { Snackbar, Alert } from "@mui/material";
 
 const Toast = () => {
   const { showToast, handleToastClosing, message, severity } = useToast();
 
-  return createPortal(
+  return (
     <Snackbar
       sx={{ mt: "60px" }}
       open={showToast}
@@ -17,8 +16,7 @@ const Toast = () => {
         {" "}
         {message}
       </Alert>
-    </Snackbar>,
-    document.getElementById("toast")!
+    </Snackbar>
   );
 };
 

@@ -13,7 +13,7 @@ const theme = createTheme({
       main: colors.gray,
     },
     error: {
-      main: "#C20114",
+      main: colors.red,
     },
   },
   typography: {
