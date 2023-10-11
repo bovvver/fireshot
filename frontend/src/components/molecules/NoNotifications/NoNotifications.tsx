@@ -1,22 +1,12 @@
-import { Box, Typography } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import colors from "@styles/colorTheme";
+import { Typography } from "@mui/material";
+import { BoxWrapper, StyledNotificationsIcon } from "./NoNotifications.styles";
 
 const NoNotifications = () => {
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        transform: "translate(0,-7%)",
-      }}
-    >
-      <NotificationsIcon sx={{ fontSize: "5rem", color: colors.gray }} />
+    <BoxWrapper>
+      <StyledNotificationsIcon />
       <Typography sx={{ fontSize: "1rem" }}>Nothing new..</Typography>
-    </Box>
+    </BoxWrapper>
   );
 };
 

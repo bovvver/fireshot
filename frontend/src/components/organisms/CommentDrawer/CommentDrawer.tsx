@@ -5,8 +5,12 @@ import { Box, Drawer } from "@mui/material";
 const CommentDrawer = ({ open }: { open: boolean }) => {
   const { handleDrawerOpen } = useModals();
 
+  const openDrawer = () => {
+    handleDrawerOpen(false);
+  };
+
   return (
-    <Drawer open={open} anchor="bottom" onClose={() => handleDrawerOpen(false)}>
+    <Drawer open={open} anchor="bottom" onClose={openDrawer}>
       <Box sx={{ pt: 1 }}>
         <Comment />
         <Comment />

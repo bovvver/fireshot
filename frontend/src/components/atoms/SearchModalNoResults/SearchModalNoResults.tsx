@@ -1,6 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import colors from "@styles/colorTheme";
+import { BoxWrapper } from "./SearchModalNoResults.styles";
 
 const SearchModalNoResults = ({
   message = "Search for a profile",
@@ -8,19 +8,10 @@ const SearchModalNoResults = ({
   message?: string;
 }) => {
   return (
-    <Box
-      sx={{
-        height: 350,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        color: colors.gray,
-      }}
-    >
+    <BoxWrapper>
       <SearchIcon sx={{ fontSize: "4.5em" }} />
       <Typography>{message}</Typography>
-    </Box>
+    </BoxWrapper>
   );
 };
 

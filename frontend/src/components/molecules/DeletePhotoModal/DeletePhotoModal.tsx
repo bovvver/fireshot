@@ -1,46 +1,29 @@
-import { Modal, Typography, Paper, Box, Button } from "@mui/material";
-import colors from "@styles/colorTheme";
+import { Modal, Typography, Box, Button } from "@mui/material";
 import { useModals } from "@hooks/contextHooks";
+import { StyledPaper } from "./DeletePhotoModal.styles";
 
 const DeletePhotoModal = () => {
   const { isDeleteModalOpen, handleDeleteModalOpening } = useModals();
 
+  const closeDeleteModal = () => {
+    handleDeleteModalOpening(false);
+  };
+
   return (
-    <Modal
-      open={isDeleteModalOpen}
-      onClose={() => {
-        handleDeleteModalOpening(false);
-      }}
-    >
-      <Paper
-        elevation={1}
-        sx={{
-          p: 2,
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
-          border: `2px solid ${colors.gray}`,
-          borderRadius: "10px",
-        }}
-      >
+    <Modal open={isDeleteModalOpen} onClose={closeDeleteModal}>
+      <StyledPaper elevation={1}>
         <Typography sx={{ mb: 2 }}>
           Are you sure you want to delete this photo?
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "end" }}>
-          <Button
-            onClick={() => {
-              handleDeleteModalOpening(false);
-            }}
-            color="secondary"
-          >
+          <Button onClick={closeDeleteModal} color="secondary">
             cancel
           </Button>
           <Button sx={{ ml: 1 }} variant="outlined" color="error">
             delete
           </Button>
         </Box>
-      </Paper>
+      </StyledPaper>
     </Modal>
   );
 };

@@ -1,21 +1,23 @@
-import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import { useModals } from "@hooks/contextHooks";
+import { NavBarWrapper } from "./BottomNavBar.styles";
 
 const BottomNavBar = () => {
   const { handleModalOpening, bottomNavValue, handleBottomNavValueChange } =
     useModals();
   const navigate = useNavigate();
 
+  const openModal = () => {
+    handleModalOpening(true);
+  };
+
   return (
-    <Paper
-      sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 600 }}
-      elevation={3}
-    >
+    <NavBarWrapper elevation={3}>
       <BottomNavigation
         value={bottomNavValue}
         onChange={handleBottomNavValueChange}
@@ -30,9 +32,7 @@ const BottomNavBar = () => {
           value="search"
           label="Search"
           icon={<SearchIcon />}
-          onClick={() => {
-            handleModalOpening(true);
-          }}
+          onClick={openModal}
         />
         <BottomNavigationAction
           value="add"
@@ -47,7 +47,7 @@ const BottomNavBar = () => {
           onClick={() => navigate("/profile")}
         />
       </BottomNavigation>
-    </Paper>
+    </NavBarWrapper>
   );
 };
 

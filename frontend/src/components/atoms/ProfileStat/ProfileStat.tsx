@@ -1,19 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { ProfileStatInterface } from "@customTypes/componentProps";
+import { BoxWrapper } from "./ProfileStat.styles";
 
 const ProfileStat = ({ counter, title }: ProfileStatInterface) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <BoxWrapper>
       <Typography>{counter}</Typography>
       <Typography>{title}</Typography>
-    </Box>
+    </BoxWrapper>
   );
 };
 

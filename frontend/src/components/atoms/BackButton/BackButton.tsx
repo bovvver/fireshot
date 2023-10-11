@@ -1,15 +1,19 @@
-import { Box, IconButton, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconButton } from "@mui/material";
 import { BackButtonInterface } from "@customTypes/componentProps";
+import {
+  StyledBox,
+  StyledBackButton,
+  BackButtonMessage,
+} from "./BackButton.styles";
 
 const BackButton = ({ onClick, value }: BackButtonInterface) => {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <StyledBox>
       <IconButton onClick={onClick}>
-        <ArrowBackIcon sx={{ fontSize: "1.5rem" }} />
+        <StyledBackButton />
       </IconButton>
-      <Typography sx={{ fontSize: "1.5rem" }}>{value}</Typography>
-    </Box>
+      <BackButtonMessage>{value}</BackButtonMessage>
+    </StyledBox>
   );
 };
 

@@ -1,38 +1,32 @@
-import { IconButton } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { ChangeEvent } from "react";
 import { useImage } from "@hooks/contextHooks";
 import { AddImageButtonInterface } from "@customTypes/componentProps";
+import {
+  Input,
+  StyledIconButton,
+  StyledAddIcon,
+} from "./AddImageButton.styles";
 
 const AddImageButton = ({ setImage }: AddImageButtonInterface) => {
   const { handleImageChange } = useImage();
 
+  const runImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    handleImageChange(e, setImage);
+  };
+
   return (
     <>
-      <input
+      <Input
         type="file"
         accept="image/*"
         id="image-upload"
-        style={{ display: "none" }}
-        onChange={(e) => {
-          handleImageChange(e, setImage);
-        }}
+        onChange={runImageChange}
       />
-      <IconButton
-        sx={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%,-50%)",
-        }}
-        component="label"
-        htmlFor="image-upload"
-      >
-        <AddIcon
-          sx={{
-            fontSize: "5rem",
-          }}
-        />
-      </IconButton>
+      <StyledIconButton>
+        <label htmlFor="image-upload">
+          <StyledAddIcon />
+        </label>
+      </StyledIconButton>
     </>
   );
 };

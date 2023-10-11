@@ -3,7 +3,6 @@ import {
   IconButton,
   Link,
   FormControl,
-  Input,
   InputAdornment,
 } from "@mui/material";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
@@ -14,11 +13,16 @@ import LikeStats from "@components/atoms/LikeStats/LikeStats";
 import PhotoComment from "@components/atoms/PhotoComment/PhotoComment";
 import PhotoDate from "@components/atoms/PhotoDate/PhotoDate";
 import { useModals } from "@hooks/contextHooks";
+import { StyledInput } from "./UnderPhotoSection.styles";
 
 const date = new Date("2023-09-01T14:22:00"); // SAMPLE DATE FOR FRONT-END DEVELOPMENT ONLY. DELETE LATER.
 
 const UnderPhotoSection = () => {
   const { handleDrawerOpen } = useModals();
+
+  const openDrawer = () => {
+    handleDrawerOpen(true);
+  };
 
   return (
     <>
@@ -41,9 +45,7 @@ const UnderPhotoSection = () => {
         />
         <Link
           component="button"
-          onClick={() => {
-            handleDrawerOpen(true);
-          }}
+          onClick={openDrawer}
           sx={{
             marginBottom: 1,
             textDecoration: "none",
@@ -55,10 +57,10 @@ const UnderPhotoSection = () => {
         <PhotoDate date={date} />
       </Box>
       <FormControl fullWidth>
-        <Input
+        <StyledInput
           placeholder="Add comment..."
           multiline
-          sx={{ marginTop: 1, whiteSpace: "pre-wrap", "& textarea": { px: 1 } }}
+          sx={{ "& textarea": { px: 1 } }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton aria-label="Add comment">
