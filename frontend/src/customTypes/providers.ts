@@ -1,4 +1,4 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, ChangeEvent } from "react";
 import { AlertColor } from "@mui/material";
 
 export interface AuthContextInterface {
@@ -10,17 +10,23 @@ export interface AuthContextInterface {
 
 export type BottomNavValue = "" | "search" | "add" | "profile";
 
-export interface BottomNavContextInterface {
+export interface ModalsContextInterface {
   isModalOpen: boolean;
-  handleModalOpening: (isModalOpenParam: boolean, title?: string) => void;
   bottomNavValue: BottomNavValue;
+  modalTitle: string;
+  areNotificationsOpen: boolean;
+  isDrawerOpen: boolean;
+  isDeleteModalOpen: boolean;
+  handleModalOpening: (isModalOpenParam: boolean, title?: string) => void;
   handleBottomNavValueChange: (
     _e: SyntheticEvent,
     newBottomNavValue: BottomNavValue
   ) => void;
   handleBottomNavValueClick: (newBottomNavValue: BottomNavValue) => void;
   handleModalClose: () => void;
-  modalTitle: string;
+  handleNotificationOpen: (newNotificationsState: boolean) => void;
+  handleDrawerOpen: (newDrawerState: boolean) => void;
+  handleDeleteModalOpening: (newDeleteModalState: boolean) => void;
 }
 
 export interface ToastContextInterface {
@@ -29,4 +35,11 @@ export interface ToastContextInterface {
   severity: AlertColor;
   handleToastOpening: (message: string, servity: AlertColor) => void;
   handleToastClosing: () => void;
+}
+
+export interface ImageChangeContextInterface {
+  handleImageChange: (
+    e: ChangeEvent<HTMLInputElement>,
+    setImageFunction: (image: string) => void
+  ) => void;
 }

@@ -1,12 +1,7 @@
 import { Box, Typography } from "@mui/material";
+import { ProfileStatInterface } from "@customTypes/componentProps";
 
-const ProfileStat = ({
-  counter,
-  title,
-}: {
-  counter: number;
-  title: string;
-}) => {
+const ProfileStat = ({ counter, title }: ProfileStatInterface) => {
   return (
     <Box
       sx={{

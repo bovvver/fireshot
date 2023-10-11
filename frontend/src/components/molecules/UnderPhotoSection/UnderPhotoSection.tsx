@@ -13,10 +13,13 @@ import SendIcon from "@mui/icons-material/Send";
 import LikeStats from "@components/atoms/LikeStats/LikeStats";
 import PhotoComment from "@components/atoms/PhotoComment/PhotoComment";
 import PhotoDate from "@components/atoms/PhotoDate/PhotoDate";
+import { useModals } from "@hooks/contextHooks";
 
 const date = new Date("2023-09-01T14:22:00"); // SAMPLE DATE FOR FRONT-END DEVELOPMENT ONLY. DELETE LATER.
 
 const UnderPhotoSection = () => {
+  const { handleDrawerOpen } = useModals();
+
   return (
     <>
       <Box>
@@ -38,6 +41,9 @@ const UnderPhotoSection = () => {
         />
         <Link
           component="button"
+          onClick={() => {
+            handleDrawerOpen(true);
+          }}
           sx={{
             marginBottom: 1,
             textDecoration: "none",

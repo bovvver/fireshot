@@ -13,7 +13,7 @@ const theme = createTheme({
       main: colors.gray,
     },
     error: {
-      main: "#C20114",
+      main: colors.red,
     },
   },
   typography: {
@@ -30,6 +30,9 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          scrollBehavior: "smooth",
+        },
         body: {
           "& #root": {
             width: "100%",

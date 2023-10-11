@@ -21,3 +21,27 @@ export interface AvatarUserField {
   src?: string;
   location?: string;
 }
+
+export interface ProfileStatInterface {
+  counter: number;
+  title: string;
+}
+
+export interface ProfileStatLinkInterface {
+  counter: number;
+  title: string;
+  onClick: () => void;
+}
+
+export interface BackButtonInterface {
+  onClick: () => void;
+  value: string;
+}
+
+export interface ProfileHeaderInterface {
+  loggedUserAccount: boolean;
+}
+
+export interface AddImageButtonInterface {
+  setImage: (image: string) => void;
+}

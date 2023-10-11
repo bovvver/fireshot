@@ -3,8 +3,8 @@ import { AuthContextInterface } from "@customTypes/providers";
 
 export const AuthContext = createContext<AuthContextInterface>({
   isLoginFormSelected: true,
-  handleFormSelection: () => {},
   isAuthenticated: false,
+  handleFormSelection: () => {},
   handleAuthentication: () => {},
 });
 

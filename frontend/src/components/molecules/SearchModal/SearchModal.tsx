@@ -7,20 +7,20 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import useBottomNav from "@hooks/useBottomNav";
+import { useModals } from "@hooks/contextHooks";
 import colors from "@styles/colorTheme";
 import SearchIcon from "@mui/icons-material/Search";
 // import SearchModalNoResults from "@components/atoms/SearchModalNoResults/SearchModalNoResults";
 import ModalSearchResult from "@components/atoms/ModalSearchResult/ModalSearchResult";
 
 const SearchModal = () => {
-  const { isModalOpen, handleModalClose, modalTitle } = useBottomNav();
+  const { isModalOpen, handleModalClose, modalTitle } = useModals();
 
   return (
     <Modal open={isModalOpen} onClose={handleModalClose}>
       <Paper
         sx={{
-          height: 400,
+          height: 500,
           display: "flex",
           flexDirection: "column",
           position: "absolute",
@@ -48,7 +48,7 @@ const SearchModal = () => {
             p: "2px 4px",
             display: "flex",
             alignItems: "center",
-            width: 250,
+            width: 350,
           }}
         >
           <InputBase

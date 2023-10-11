@@ -1,15 +1,18 @@
 import { ReactNode } from "react";
 import AuthProvider from "./AuthProvider";
-import SearchModalProvider from "./BottomNavProvider";
+import SearchModalProvider from "./ModalsProvider";
 import ToastProvider from "./ToastProvider";
+import ImageChangeProvider from "./ImageChangeProvider";
 
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   return (
-    <AuthProvider>
-      <SearchModalProvider>
-        <ToastProvider>{children}</ToastProvider>
-      </SearchModalProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <SearchModalProvider>
+          <ImageChangeProvider>{children}</ImageChangeProvider>
+        </SearchModalProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 };
 

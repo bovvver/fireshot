@@ -4,16 +4,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import useBottomNav from "@hooks/useBottomNav";
+import { useModals } from "@hooks/contextHooks";
 
 const BottomNavBar = () => {
   const { handleModalOpening, bottomNavValue, handleBottomNavValueChange } =
-    useBottomNav();
+    useModals();
   const navigate = useNavigate();
 
   return (
     <Paper
-      sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+      sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 600 }}
       elevation={3}
     >
       <BottomNavigation

@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from "react";
-import useAuth from "@hooks/useAuth";
+import { useAuth } from "@hooks/contextHooks";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_PATH } from "@config/routes";
 

@@ -1,13 +1,5 @@
-import ProfileStat from "@components/atoms/ProfileStat/ProfileStat";
-import {
-  Container,
-  Box,
-  Avatar,
-  Typography,
-  Button,
-  ImageList,
-  ImageListItem,
-} from "@mui/material";
+import { Container, Box, ImageList, ImageListItem } from "@mui/material";
+import ProfileHeader from "@components/molecules/ProfileHeader/ProfileHeader";
 
 // TODO: Static content for development. Remove later.
 const itemData = [
@@ -65,26 +57,7 @@ const itemData = [
 const Profile = () => {
   return (
     <Container maxWidth="md">
-      <Box>
-        <Box sx={{ my: 2, display: "flex" }}>
-          <Avatar sx={{ width: "7em", height: "7em" }}>S</Avatar>
-          <Box
-            sx={{ display: "flex", flex: 1, justifyContent: "space-evenly" }}
-          >
-            <ProfileStat counter={12} title="Posts" />
-            <ProfileStat counter={1265} title="Followers" />
-            <ProfileStat counter={11} title="Following" />
-          </Box>
-        </Box>
-        <Typography sx={{ fontWeight: "bold" }}>sampleUser</Typography>
-        <Typography>
-          Hello! I am sampleUser and this is my description. Lorem ipsum dolor
-          sit amet, consectetur adipiscing elit.
-        </Typography>
-        <Button fullWidth variant="outlined" sx={{ my: 2 }}>
-          Edit profile
-        </Button>
-      </Box>
+      <ProfileHeader loggedUserAccount={true} />
       <Box>
         <ImageList sx={{ width: "100%" }} cols={3}>
           {itemData.map((item) => (

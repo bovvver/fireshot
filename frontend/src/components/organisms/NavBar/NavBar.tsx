@@ -11,14 +11,14 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import Logo from "@components/atoms/Logo/Logo";
 import { useNavigate } from "react-router-dom";
-import useBottomNav from "@hooks/useBottomNav";
+import { useModals } from "@hooks/contextHooks";
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const { handleBottomNavValueClick } = useBottomNav();
+  const { handleBottomNavValueClick, handleNotificationOpen } = useModals();
 
   return (
-    <AppBar elevation={1} position="sticky">
+    <AppBar sx={{ zIndex: 400 }} elevation={1} position="sticky">
       <Container>
         <Toolbar
           sx={{
@@ -38,7 +38,11 @@ const NavBar = () => {
             <Logo />
           </Link>
           <Box>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                handleNotificationOpen(true);
+              }}
+            >
               <Badge badgeContent={2} color="primary">
                 <WhatshotIcon sx={{ fontSize: "1em" }} />
               </Badge>
