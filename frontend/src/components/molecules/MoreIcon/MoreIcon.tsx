@@ -17,6 +17,11 @@ const MoreIcon = () => {
     setAnchorEl(null);
   };
 
+  const openDeleteModal = () => {
+    handleDeleteModalOpening(true);
+    handleClose();
+  };
+
   return (
     <>
       <IconButton
@@ -47,14 +52,7 @@ const MoreIcon = () => {
         }}
       >
         <MenuItem onClick={handleClose}>Edit post</MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleDeleteModalOpening(true);
-            handleClose();
-          }}
-        >
-          Delete post
-        </MenuItem>
+        <MenuItem onClick={openDeleteModal}>Delete post</MenuItem>
       </Menu>
     </>
   );

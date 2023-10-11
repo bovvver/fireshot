@@ -1,22 +1,11 @@
-import { Typography } from "@mui/material";
-import WhatshotIcon from "@mui/icons-material/Whatshot";
+import { LogoFont, LogoIcon } from "./Logo.styles";
 
 const Logo = ({ size = 2 }: { size?: number }) => {
   return (
-    <Typography
-      variant="h2"
-      color="primary"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        fontFamily: `'Fredoka', sans-serif`,
-        fontWeight: "bold",
-        fontSize: `${size}em`,
-      }}
-    >
-      <WhatshotIcon sx={{ fontSize: "1em" }} />
+    <LogoFont variant="h2" color="primary" size={size}>
+      <LogoIcon />
       Fireshot
-    </Typography>
+    </LogoFont>
   );
 };
 

@@ -2,7 +2,7 @@ import NavBar from "@components/organisms/NavBar/NavBar";
 import AppTheme from "@styles/AppTheme";
 import { CssBaseline, Box } from "@mui/material";
 import BottomNavBar from "@components/organisms/BottomNavBar/BottomNavBar";
-import Home from "./Home";
+import Home from "../Home/Home";
 import { Routes, Route } from "react-router-dom";
 import {
   ROOT_PATH,
@@ -11,17 +11,17 @@ import {
   ADD_PATH,
   PHOTO_PATH,
 } from "@config/routes";
-import Profile from "./Profile";
+import Profile from "../Profile/Profile";
 import { useLocation } from "react-router-dom";
-import AuthenticationForm from "./AuthenticationForm";
+import AuthenticationForm from "../AuthenticationForm/AuthenticationForm";
 import RedirectIfNotAuthenticated from "@components/atoms/RedirectIfNotAuthenticated/RedirectIfNotAuthenticated";
 import SearchModal from "@components/molecules/SearchModal/SearchModal";
-import AddPhoto from "./AddPhoto";
+import AddPhoto from "../AddPhoto/AddPhoto";
 import Toast from "@components/atoms/Toast/Toast";
 import Notifications from "@components/organisms/Notifications/Notifications";
 import CommentDrawer from "@components/organisms/CommentDrawer/CommentDrawer";
 import { useModals } from "@hooks/contextHooks";
-import PhotoSection from "./PhotoSection";
+import PhotoSection from "../PhotoSection/PhotoSection";
 import DeletePhotoModal from "@components/molecules/DeletePhotoModal/DeletePhotoModal";
 
 const App = () => {

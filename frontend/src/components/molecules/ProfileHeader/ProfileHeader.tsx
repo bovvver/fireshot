@@ -1,18 +1,16 @@
 import { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Avatar,
-  TextField,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Button, TextField } from "@mui/material";
 import { ProfileHeaderInterface } from "@customTypes/componentProps";
 import ProfileStat from "@components/atoms/ProfileStat/ProfileStat";
 import ProfileStatLink from "@components/atoms/ProfileStatLink/ProfileStatLink";
 import { useModals } from "@hooks/contextHooks";
 import AddImageButton from "@components/atoms/AddImageButton/AddImageButton";
-import colors from "@styles/colorTheme";
+import {
+  BoxWrapper,
+  StyledAvatar,
+  StyledPaper,
+  ProfileStatsWrapper,
+} from "./ProfileHeader.styles";
 
 const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
   const [avatar, setAvatar] = useState("");
@@ -23,48 +21,41 @@ const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
     setEditable(true);
   };
 
+  const openFollowersModal = () => {
+    handleModalOpening(true, "Followers");
+  };
+
+  const openFollowingModal = () => {
+    handleModalOpening(true, "Following");
+  };
+
   return (
     <Box>
-      <Box sx={{ my: 2, display: "flex" }}>
+      <BoxWrapper>
         {!editable ? (
-          <Avatar sx={{ width: "7em", height: "7em" }}>S</Avatar>
+          <StyledAvatar>S</StyledAvatar>
         ) : (
-          <Paper
-            sx={{
-              position: "relative",
-              width: "8.5em",
-              height: "8.5em",
-              backgroundColor: colors.selectGray,
-              backgroundImage: `url(${avatar})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              borderRadius: "50%",
-            }}
-          >
+          <StyledPaper avatar={avatar}>
             <AddImageButton setImage={setAvatar} />
-          </Paper>
+          </StyledPaper>
         )}
 
-        <Box sx={{ display: "flex", flex: 1, justifyContent: "space-evenly" }}>
+        <ProfileStatsWrapper>
           <ProfileStat counter={12} title="Posts" />
 
           <ProfileStatLink
             counter={1265}
             title="Followers"
-            onClick={() => {
-              handleModalOpening(true, "Followers");
-            }}
+            onClick={openFollowersModal}
           />
 
           <ProfileStatLink
             counter={11}
             title="Following"
-            onClick={() => {
-              handleModalOpening(true, "Following");
-            }}
+            onClick={openFollowingModal}
           />
-        </Box>
-      </Box>
+        </ProfileStatsWrapper>
+      </BoxWrapper>
       <Typography sx={{ fontWeight: "bold" }}>sampleUser</Typography>
 
       {!editable ? (

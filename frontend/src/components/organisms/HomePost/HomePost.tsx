@@ -1,26 +1,16 @@
-import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PostPhoto from "@components/molecules/PostPhoto/PostPhoto";
 import UnderPhotoSection from "@components/molecules/UnderPhotoSection/UnderPhotoSection";
 import { AvatarUserField } from "@customTypes/componentProps";
 import MoreIcon from "@components/molecules/MoreIcon/MoreIcon";
+import { PostWrapper, UserDataWrapper, StyledAvatar } from "./HomePost.styles";
 
 const HomePost = ({ username, src = "", location = "" }: AvatarUserField) => {
   return (
-    <Paper elevation={1} sx={{ paddingTop: 1, my: 3, maxWidth: "600px" }}>
-      <Box
-        sx={{
-          py: 0.5,
-          mb: 1,
-          ml: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+    <PostWrapper elevation={1}>
+      <UserDataWrapper>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar src={src} sx={{ marginRight: 1, width: 30, height: 30 }}>
-            {username[0].toUpperCase()}
-          </Avatar>
+          <StyledAvatar src={src}>{username[0].toUpperCase()}</StyledAvatar>
           <Box>
             <Typography sx={{ lineHeight: "150%" }}>{username}</Typography>
             <Typography sx={{ fontSize: "0.8em", lineHeight: "90%" }}>
@@ -29,13 +19,13 @@ const HomePost = ({ username, src = "", location = "" }: AvatarUserField) => {
           </Box>
         </Box>
         <MoreIcon />
-      </Box>
+      </UserDataWrapper>
       <PostPhoto
         src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg"
         alt="sample"
       />
       <UnderPhotoSection />
-    </Paper>
+    </PostWrapper>
   );
 };
 

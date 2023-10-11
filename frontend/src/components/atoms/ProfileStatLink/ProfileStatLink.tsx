@@ -1,5 +1,6 @@
-import { Link, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { ProfileStatLinkInterface } from "@customTypes/componentProps";
+import { StyledLink, InvisibleButton } from "./ProfileStatLink.styles";
 
 const ProfileStatLink = ({
   counter,
@@ -7,21 +8,12 @@ const ProfileStatLink = ({
   onClick,
 }: ProfileStatLinkInterface) => {
   return (
-    <Link
-      underline="none"
-      component="button"
-      onClick={onClick}
-      sx={{
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Typography>{counter}</Typography>
-      <Typography>{title}</Typography>
-    </Link>
+    <StyledLink onClick={onClick}>
+      <InvisibleButton>
+        <Typography>{counter}</Typography>
+        <Typography>{title}</Typography>
+      </InvisibleButton>
+    </StyledLink>
   );
 };
 

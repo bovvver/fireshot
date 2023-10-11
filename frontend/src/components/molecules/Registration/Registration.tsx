@@ -1,9 +1,10 @@
-import { Link, Button, Box } from "@mui/material";
+import { Link, Button } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm, Control } from "react-hook-form";
 import { LoginDTO } from "@customTypes/auth";
 import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";
 import { FieldValues } from "@customTypes/componentProps";
+import { BoxWrapper } from "./Registration.styles";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex =
@@ -30,12 +31,18 @@ const Registration = () => {
     reset();
   };
 
+  const switchToRegistration = () => {
+    handleFormSelection(true);
+  };
+
+  const validatePasswords = (val: string) => {
+    if (watch("password") !== val) {
+      return "Passwords don't match.";
+    }
+  };
+
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ my: 3, display: "flex", flexDirection: "column" }}
-    >
+    <BoxWrapper component="form" onSubmit={handleSubmit(onSubmit)}>
       <AuthFormInput
         name="email"
         control={control as Control<FieldValues>}
@@ -77,11 +84,7 @@ const Registration = () => {
         rules={{
           required: "Required",
           pattern: passwordRegex,
-          validate: (val: string) => {
-            if (watch("password") !== val) {
-              return "Passwords don't match.";
-            }
-          },
+          validate: validatePasswords,
         }}
         errors={errors}
         label="Confirm password"
@@ -91,14 +94,10 @@ const Registration = () => {
       <Button size="large" type="submit" variant="contained" sx={{ my: 2 }}>
         Login
       </Button>
-      <Link
-        underline="hover"
-        component="button"
-        onClick={() => handleFormSelection(true)}
-      >
+      <Link underline="hover" component="button" onClick={switchToRegistration}>
         Already have an account?
       </Link>
-    </Box>
+    </BoxWrapper>
   );
 };
 
