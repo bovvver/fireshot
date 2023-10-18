@@ -25,16 +25,16 @@ export const SelectImagePaper = styled(Paper)`
   aspect-ratio: 1/1;
   max-height: 70vh;
   background-color: ${colors.selectGray};
-  ${({ backgroundImage }: { backgroundImage: string }) =>
-    `background-image: url(${backgroundImage});`}
+  ${({ backgroundimage }: { backgroundimage: string }) =>
+    `background-image: url(${backgroundimage});`}
   background-size: cover;
   background-position: center;
 `;
 
 export const StyledTabPanel = styled(TabPanel)`
   width: 100%;
-  ${({ currentTab, value }: { currentTab: string; value: string }) =>
-    `display: ${currentTab === value ? "flex" : "none"};`}
+  ${({ currenttab, value }: { currenttab: string; value: string }) =>
+    `display: ${currenttab === value ? "flex" : "none"};`}
   flex-direction: column;
   align-items: center;
 `;
