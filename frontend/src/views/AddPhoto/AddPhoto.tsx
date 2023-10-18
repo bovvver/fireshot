@@ -31,8 +31,8 @@ function App() {
             />
           </TabList>
         </TabListWrapper>
-        <StyledTabPanel currentTab={currentTab} value="0">
-          <SelectImagePaper backgroundImage={backgroundImage}>
+        <StyledTabPanel currenttab={currentTab} value="0">
+          <SelectImagePaper backgroundimage={backgroundImage}>
             <AddImageButton setImage={setBackgroundImage} />
           </SelectImagePaper>
           <Button
@@ -51,7 +51,7 @@ function App() {
             next
           </Button>
         </StyledTabPanel>
-        <StyledTabPanel currentTab={currentTab} value="1">
+        <StyledTabPanel currenttab={currentTab} value="1">
           <TextField
             sx={{ mt: 2, maxWidth: { xs: "40vh", sm: "50vh" } }}
             fullWidth

@@ -51,7 +51,6 @@ const MoreIcon = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>Edit post</MenuItem>
         <MenuItem onClick={openDeleteModal}>Delete post</MenuItem>
       </Menu>
     </>
