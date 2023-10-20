@@ -4,6 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+access-refresh-token-keys
+access-token.*
+refresh-token.*
 
 ### STS ###
 .apt_generated
@@ -49,8 +52,9 @@ node_modules
 dist
 dist-ssr
 *.local
+**/.env
 .env
-*.env
+**/*.env
 
 # Editor directories and files
 .vscode/*
