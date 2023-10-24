@@ -1,11 +1,17 @@
 import { SyntheticEvent, ChangeEvent } from "react";
 import { AlertColor } from "@mui/material";
+import { LoginRequestData, RegistrationRequestData } from "./auth";
 
 export interface AuthContextInterface {
   isLoginFormSelected: boolean;
   handleFormSelection: (isLoginForm: boolean) => void;
   isAuthenticated: boolean;
   handleAuthentication: (isAuthenticatedParam: boolean) => void;
+  handleLogin: (data: LoginRequestData) => void;
+  handleRegistration: (data: RegistrationRequestData) => void;
+  handleLogout: () => void;
+  forceLogout: () => void;
+  authenticate: () => void;
 }
 
 export type BottomNavValue = "" | "search" | "add" | "profile";

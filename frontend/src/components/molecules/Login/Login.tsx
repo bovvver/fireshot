@@ -1,11 +1,11 @@
 import { Link, Button, Box } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm } from "react-hook-form";
-import { LoginDTO } from "@customTypes/auth";
+import { LoginRequestData } from "@customTypes/auth";
 import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";
 
 const Login = () => {
-  const { handleFormSelection } = useAuth();
+  const { handleFormSelection, handleLogin } = useAuth();
   const {
     handleSubmit,
     control,
@@ -18,8 +18,8 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (data: LoginDTO) => {
-    console.log(data);
+  const onSubmit = (data: LoginRequestData) => {
+    handleLogin(data);
     reset();
   };
 
