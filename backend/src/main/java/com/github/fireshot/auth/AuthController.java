@@ -1,8 +1,8 @@
 package com.github.fireshot.auth;
 
-import com.github.fireshot.dto.LoginDTO;
-import com.github.fireshot.dto.RegisterDTO;
-import com.github.fireshot.dto.TokenDTO;
+import com.github.fireshot.dto.LoginRequestDTO;
+import com.github.fireshot.dto.RegisterRequestDTO;
+import com.github.fireshot.dto.ResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +18,22 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<TokenDTO> register(@RequestBody RegisterDTO registerDTO) {
-        return authService.register(registerDTO);
+    public ResponseEntity<ResponseDTO<String>> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+        return authService.register(registerRequestDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
-        return authService.login(loginDTO);
+    public ResponseEntity<ResponseDTO<String>> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        return authService.login(loginRequestDTO);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Object> logout() {
+    public ResponseEntity<ResponseDTO<Object>> logout() {
         return authService.logout();
     }
 
     @PostMapping("/token")
-    public ResponseEntity<TokenDTO> token(@CookieValue(name = "refresh-token") String refreshToken) {
+    public ResponseEntity<ResponseDTO<String>> token(@CookieValue(name = "refresh-token") String refreshToken) {
         return authService.token(refreshToken);
     }
 }

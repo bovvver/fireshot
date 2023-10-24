@@ -1,11 +1,13 @@
 package com.github.fireshot.security;
 
-import com.github.fireshot.dto.TokenDTO;
+import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.TokensDTO;
 import com.github.fireshot.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,7 +51,7 @@ public class TokenGenerator {
      * @param ISSUER              - token issuer.
      * @param AUDIENCE            - token audience.
      */
-    public TokenGenerator(JwtEncoder accessTokenEncoder, JwtEncoder refreshTokenEncoder, @Value("${environment.jwt.expiration}") int JWT_EXPIRATION, @Value("${environment.jwt.refresh-expiration}") int REFRESH_EXPIRATION, @Value("${environment.issuer}") String ISSUER, @Value("${environment.audience}") String AUDIENCE,  @Value("${environment.domain}") String DOMAIN) {
+    public TokenGenerator(JwtEncoder accessTokenEncoder, JwtEncoder refreshTokenEncoder, @Value("${environment.jwt.expiration}") int JWT_EXPIRATION, @Value("${environment.jwt.refresh-expiration}") int REFRESH_EXPIRATION, @Value("${environment.issuer}") String ISSUER, @Value("${environment.audience}") String AUDIENCE, @Value("${environment.domain}") String DOMAIN) {
         this.accessTokenEncoder = accessTokenEncoder;
         this.refreshTokenEncoder = refreshTokenEncoder;
         this.JWT_EXPIRATION = JWT_EXPIRATION;
@@ -74,6 +76,15 @@ public class TokenGenerator {
         return accessTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
 
+    private String returnAccessToken(Authentication authentication) {
+        if (!(authentication.getPrincipal() instanceof User)) {
+            throw new BadCredentialsException(
+                    MessageFormat.format("principal {0} is not of User type", authentication.getPrincipal().getClass())
+            );
+        }
+        return createAccessToken(authentication);
+    }
+
     private String createRefreshToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Instant now = Instant.now();
@@ -89,44 +100,27 @@ public class TokenGenerator {
         return refreshTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
 
-
-    /**
-     * Creates new {@code TokenDTO} ready to be sent to user in response.
-     * In more detail, it is checking if {@code refreshToken} is about to expire in 7 days.
-     * If it is, then it is going to refresh it, or not if it is not close to expiration.
-     *
-     * @param authentication - object containing authentication details.
-     * @return {@code ResponseEntity(TokenDTO) with refreshToken secure cookie} - TokenDTO with correct tokens.
-     */
-    public ResponseEntity<TokenDTO> createToken(Authentication authentication) {
-        if (!(authentication.getPrincipal() instanceof User user)) {
-            throw new BadCredentialsException(
-                    MessageFormat.format("principal {0} is not of User type", authentication.getPrincipal().getClass())
-            );
-        }
-
-        String username = user.getEmail();
-        String accessToken = createAccessToken(authentication);
+    private String returnRefreshToken(Authentication authentication) {
         String refreshToken;
 
         if (authentication.getCredentials() instanceof Jwt jwt) {
-            Instant now = Instant.now();
-            Instant expiresAt = jwt.getExpiresAt();
-            Duration duration = Duration.between(now, expiresAt);
+            Duration duration = Duration.between(Instant.now(), jwt.getExpiresAt());
             long daysUntilExpired = duration.toDays();
 
             if (daysUntilExpired < 7) refreshToken = createRefreshToken(authentication);
             else refreshToken = jwt.getTokenValue();
-
         } else refreshToken = createRefreshToken(authentication);
 
-        ResponseCookie refreshTokenCookie = createCookie("refresh-token", refreshToken, true);
-        ResponseCookie isRefreshTokenPresentCookie = createCookie("refresh-present", "present", false);
+        return createCookie("refresh-token", refreshToken, true).toString();
+    }
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, isRefreshTokenPresentCookie.toString())
-                .body(new TokenDTO(username, accessToken));
+    public TokensDTO getTokens(Authentication authentication) {
+        String accessTokenHashMap = returnAccessToken(authentication);
+        String refreshTokenCookie = returnRefreshToken(authentication);
+
+        String isRefreshTokenPresentCookie = createCookie("refresh-present", "present", false).toString();
+
+        return new TokensDTO(accessTokenHashMap, refreshTokenCookie, isRefreshTokenPresentCookie);
     }
 
     /**
@@ -136,14 +130,16 @@ public class TokenGenerator {
      *
      * @return ResponseEntity with empty cookies.
      */
-    public ResponseEntity<Object> destroyToken() {
+    public ResponseEntity<ResponseDTO<Object>> destroyToken() {
         ResponseCookie emptyRefreshTokenCookie = destroyCookie("refresh-token");
         ResponseCookie emptyIsRefreshTokenPresentCookie = destroyCookie("refresh-present");
+
+        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.OK.value(), "Logged out.");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, emptyRefreshTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, emptyIsRefreshTokenPresentCookie.toString())
-                .build();
+                .body(responseDTO);
     }
 
     /**

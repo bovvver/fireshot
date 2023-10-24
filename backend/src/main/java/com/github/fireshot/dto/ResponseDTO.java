@@ -1,9 +1,10 @@
 package com.github.fireshot.dto;
 
-import org.springframework.http.HttpStatusCode;
+import java.util.HashMap;
+import java.util.Map;
 
-public record ResponseDTO<T>(HttpStatusCode statusCode, String message, T body) {
-    public ResponseDTO(HttpStatusCode statusCode, String message) {
-        this(statusCode, message, null);
+public record ResponseDTO<T>(int statusCode, String message, Map<String, T> data) {
+    public ResponseDTO(int statusCode, String message) {
+        this(statusCode, message, new HashMap<>());
     }
 }
