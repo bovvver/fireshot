@@ -12,14 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 @ControllerAdvice
 public class RestExceptionHandler {
     @ExceptionHandler(value = UserAlreadyExistsException.class)
-    public ResponseEntity<ResponseDTO<Object>> handleUserAlreadyExistsException() {
-        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.CONFLICT.value(), "User with this e-mail already exists.");
+    public ResponseEntity<ResponseDTO<Object>> handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
+        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.CONFLICT.value(), exception.getMessage());
         return new ResponseEntity<>(responseDTO, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(value = BadCredentialsException.class)
-    public ResponseEntity<ResponseDTO<Object>> handleBadCredentialsException() {
-        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), "E-mail or password is incorrect. Please try again.");
+    public ResponseEntity<ResponseDTO<Object>> handleBadCredentialsException(BadCredentialsException exception) {
+        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
         return new ResponseEntity<>(responseDTO, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = RegistrationValidationException.class)
+    public ResponseEntity<ResponseDTO<Object>> handleRegistrationValidationException(RegistrationValidationException exception) {
+        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,3 +1,4 @@
+import { useMemo, useEffect } from "react";
 import NavBar from "@components/organisms/NavBar/NavBar";
 import AppTheme from "@styles/AppTheme";
 import { CssBaseline, Box } from "@mui/material";
@@ -20,13 +21,41 @@ import AddPhoto from "../AddPhoto/AddPhoto";
 import Toast from "@components/atoms/Toast/Toast";
 import Notifications from "@components/organisms/Notifications/Notifications";
 import CommentDrawer from "@components/organisms/CommentDrawer/CommentDrawer";
-import { useModals } from "@hooks/contextHooks";
+import { useModals, useAuth, useToast } from "@hooks/contextHooks";
 import PhotoSection from "../PhotoSection/PhotoSection";
 import DeletePhotoModal from "@components/molecules/DeletePhotoModal/DeletePhotoModal";
+import { jwtToken } from "@env/environments";
+import { apiClient } from "@api/ApiClient";
 
 const App = () => {
+  const { handleLogout, authenticate } = useAuth();
   const { isDrawerOpen } = useModals();
+  const { handleToastOpening } = useToast();
   const location = useLocation();
+
+  useMemo(() => {
+    apiClient.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response && error.response.status == 401) {
+          handleToastOpening(error.response.data.message, "error");
+          handleLogout();
+        } else {
+          return Promise.reject(error);
+        }
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem(jwtToken) !== null) {
+      authenticate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const publicRoutes = [
     { path: LOGIN_PATH, component: <AuthenticationForm /> },

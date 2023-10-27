@@ -1,7 +1,7 @@
 import { Link, Button } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm, Control } from "react-hook-form";
-import { LoginDTO } from "@customTypes/auth";
+import { RegistrationRequestData } from "@customTypes/auth";
 import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";
 import { FieldValues } from "@customTypes/componentProps";
 import { BoxWrapper } from "./Registration.styles";
@@ -11,7 +11,7 @@ const passwordRegex =
   /^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\-]).{8,}$/;
 
 const Registration = () => {
-  const { handleFormSelection } = useAuth();
+  const { handleFormSelection, handleRegistration } = useAuth();
   const {
     handleSubmit,
     control,
@@ -21,13 +21,13 @@ const Registration = () => {
   } = useForm({
     defaultValues: {
       email: "",
-      username: "",
+      nickname: "",
       password: "",
       confirmPassword: "",
     },
   });
-  const onSubmit = (data: LoginDTO) => {
-    console.log(data);
+  const onSubmit = (data: RegistrationRequestData) => {
+    handleRegistration(data);
     reset();
   };
 
@@ -55,7 +55,7 @@ const Registration = () => {
       />
 
       <AuthFormInput
-        name="username"
+        name="nickname"
         control={control as Control<FieldValues>}
         rules={{
           required: "Required",
@@ -92,7 +92,7 @@ const Registration = () => {
       />
 
       <Button size="large" type="submit" variant="contained" sx={{ my: 2 }}>
-        Login
+        Create account
       </Button>
       <Link underline="hover" component="button" onClick={switchToRegistration}>
         Already have an account?

@@ -2,7 +2,7 @@ import { Control, FieldErrors } from "react-hook-form";
 
 export interface FieldValues {
   email: string;
-  username?: string;
+  nickname?: string;
   password: string;
   confirmPassword?: string;
 }
