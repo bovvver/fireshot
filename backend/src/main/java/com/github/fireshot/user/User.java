@@ -65,13 +65,13 @@ public class User implements UserDetails {
      * @param locked   Has the user account been blocked.
      * @param enabled  Has the user account been closed.
      */
-    public User(String email,String nickname, String password, Role role, boolean expired, boolean locked, boolean enabled) {
+    public User(String email, String nickname, String password, Role role, boolean expired, boolean locked, boolean enabled) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.passwordExpiration = LocalDate.now().plusDays(passwordExp);
         this.photos = new ArrayList<>();
-        this.followers =  new LinkedList<>();
+        this.followers = new LinkedList<>();
         this.following = new LinkedList<>();
         this.role = role;
         this.expired = expired;
@@ -81,6 +81,7 @@ public class User implements UserDetails {
 
     /**
      * Returns roles attached to user. By default, it is only USER role.
+     *
      * @return list of user roles.
      */
     @Override
@@ -90,6 +91,7 @@ public class User implements UserDetails {
 
     /**
      * Returns identifier by which the user is logged in.
+     *
      * @return email of this User.
      */
     @Override

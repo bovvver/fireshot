@@ -27,8 +27,7 @@ const Registration = () => {
     },
   });
   const onSubmit = (data: RegistrationRequestData) => {
-    const { email, nickname, password } = data;
-    handleRegistration({ email, nickname, password });
+    handleRegistration(data);
     reset();
   };
 

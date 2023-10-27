@@ -1,5 +1,8 @@
 package com.github.fireshot.user;
 
+import com.github.fireshot.dto.RegisterRequestDTO;
+import com.github.fireshot.enums.Role;
+import com.github.fireshot.exceptions.RegistrationValidationException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * UserService class containing business logic for {@code User.class}.
@@ -26,27 +31,27 @@ public class UserService implements UserDetailsService {
      */
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * Saves passed User to repository.
-     *
-     * @param user passed to be saved in repository.
-     */
-    public void createUser(UserDetails user) {
-        if (isUserExistsByEmail(user.getUsername()))
-            throw new UserAlreadyExistsException("User with this e-mail already exists.");
+    public void createUser(RegisterRequestDTO registerRequestDTO) {
+        validateUser(registerRequestDTO);
 
-        ((User) user).setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save((User) user);
+        User user = new User(registerRequestDTO.email(), registerRequestDTO.nickname(), registerRequestDTO.password(), Role.USER, false, false, true);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 
     /**
      * Checks if User exists by email.
      *
-     * @param username identifier passed to identify user account.
+     * @param email identifier passed to identify user account.
      * @return {@code true} if User is found or {@code false} if not.
      */
-    public boolean isUserExistsByEmail(String username) {
-        return userRepository.existsByEmail(username);
+    public boolean isUserExistsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean isUserExistsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 
     /**
@@ -61,5 +66,24 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(
                         MessageFormat.format("username {0} not found", email)
                 ));
+    }
+
+    private void validateUser(RegisterRequestDTO user) {
+        Pattern emailRegex = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+        Pattern passwordRegex = Pattern.compile("^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,}$");
+
+        Matcher emailMatcher = emailRegex.matcher(user.email());
+        Matcher passwordMatcher = passwordRegex.matcher(user.password());
+
+        if (!emailMatcher.matches())
+            throw new RegistrationValidationException("Invalid e-mail");
+        if(!passwordMatcher.matches())
+            throw new RegistrationValidationException("Password is to weak.");
+        if(!user.password().equals(user.confirmPassword()))
+            throw new RegistrationValidationException("Passwords doesn't match.");
+        if(isUserExistsByNickname(user.nickname()))
+            throw new UserAlreadyExistsException("User with this nickname already exists.");
+        if (isUserExistsByEmail(user.email()))
+            throw new UserAlreadyExistsException("User with this e-mail already exists.");
     }
 }
