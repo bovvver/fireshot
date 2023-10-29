@@ -130,6 +130,7 @@ public class TokenGenerator {
      *
      * @return ResponseEntity with empty cookies.
      */
+
     public ResponseEntity<ResponseDTO<Object>> destroyToken() {
         ResponseCookie emptyRefreshTokenCookie = destroyCookie("refresh-token");
         ResponseCookie emptyIsRefreshTokenPresentCookie = destroyCookie("refresh-present");

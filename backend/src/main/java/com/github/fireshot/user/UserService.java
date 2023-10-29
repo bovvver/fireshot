@@ -5,7 +5,6 @@ import com.github.fireshot.enums.Role;
 import com.github.fireshot.exceptions.RegistrationValidationException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,7 +60,7 @@ public class UserService implements UserDetailsService {
      * @return {@code UserDetails} - User entity from database.
      * @throws UsernameNotFoundException if User is not found in database.
      */
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         MessageFormat.format("username {0} not found", email)

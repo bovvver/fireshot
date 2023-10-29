@@ -1,19 +1,36 @@
 import { Control, FieldErrors } from "react-hook-form";
 
-export interface FieldValues {
+export interface CustomTextFieldValues {
   email: string;
   nickname?: string;
   password: string;
   confirmPassword?: string;
 }
 
-export interface AuthFormInputProps {
-  name: keyof FieldValues;
-  control: Control<FieldValues>;
+export interface AddPhotoFieldValues {
+  photo: File | null;
+  description: string;
+  location: string;
+}
+
+export interface CustomTextFieldProps {
+  name: keyof CustomTextFieldValues;
+  control: Control<CustomTextFieldValues>;
   rules: object;
-  errors: FieldErrors<FieldValues>;
+  errors: FieldErrors<CustomTextFieldValues>;
   label: string;
   type?: string;
+}
+
+export interface AddPhotoTextFieldProps {
+  name: keyof AddPhotoFieldValues;
+  control: Control<AddPhotoFieldValues>;
+  rules: object;
+  errors: FieldErrors<AddPhotoFieldValues>;
+  label: string;
+  placeholder: string;
+  multiline?: boolean;
+  rows?: number;
 }
 
 export interface AvatarUserField {
@@ -43,5 +60,12 @@ export interface ProfileHeaderInterface {
 }
 
 export interface AddImageButtonInterface {
-  setImage: (image: string) => void;
+  setImage: (image: File | null) => void;
+  setBackground: (image: string) => void;
+}
+
+export interface AddPhotoData {
+  photo: File | null,
+  description: string,
+  location: string,
 }

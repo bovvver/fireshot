@@ -2,8 +2,8 @@ import { Link, Button } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm, Control } from "react-hook-form";
 import { RegistrationRequestData } from "@customTypes/auth";
-import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";
-import { FieldValues } from "@customTypes/componentProps";
+import CustomTextField from "@components/atoms/CustomTextField/CustomTextField";
+import { CustomTextFieldValues } from "@customTypes/componentProps";
 import { BoxWrapper } from "./Registration.styles";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -43,9 +43,9 @@ const Registration = () => {
 
   return (
     <BoxWrapper component="form" onSubmit={handleSubmit(onSubmit)}>
-      <AuthFormInput
+      <CustomTextField
         name="email"
-        control={control as Control<FieldValues>}
+        control={control as Control<CustomTextFieldValues>}
         rules={{
           required: "Required",
           pattern: { value: emailRegex, message: "Invalid e-mail" },
@@ -54,9 +54,9 @@ const Registration = () => {
         label="E-mail"
       />
 
-      <AuthFormInput
+      <CustomTextField
         name="nickname"
-        control={control as Control<FieldValues>}
+        control={control as Control<CustomTextFieldValues>}
         rules={{
           required: "Required",
         }}
@@ -64,9 +64,9 @@ const Registration = () => {
         label="Username"
       />
 
-      <AuthFormInput
+      <CustomTextField
         name="password"
-        control={control as Control<FieldValues>}
+        control={control as Control<CustomTextFieldValues>}
         rules={{
           required: "Required",
           minLength: { value: 6, message: "Minimum 6 characters" },
@@ -78,9 +78,9 @@ const Registration = () => {
         type="password"
       />
 
-      <AuthFormInput
+      <CustomTextField
         name="confirmPassword"
-        control={control as Control<FieldValues>}
+        control={control as Control<CustomTextFieldValues>}
         rules={{
           required: "Required",
           pattern: passwordRegex,

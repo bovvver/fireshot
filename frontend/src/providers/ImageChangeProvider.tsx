@@ -16,7 +16,8 @@ const ImageChangeProvider = ({ children }: { children: ReactNode }) => {
 
   const handleImageChange = (
     e: ChangeEvent<HTMLInputElement>,
-    setImageFunction: (image: string) => void
+    setBackgroundFunction: (image: string) => void,
+    setImageFunction: (image: File) => void
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -29,7 +30,8 @@ const ImageChangeProvider = ({ children }: { children: ReactNode }) => {
             handleToastOpening("Please, select image file.", "warning");
             return;
           }
-          setImageFunction(event.target.result as string);
+          setImageFunction(file);
+          setBackgroundFunction(event.target.result as string);
         }
       };
       reader.readAsDataURL(file);

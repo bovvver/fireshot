@@ -46,6 +46,7 @@ export interface ToastContextInterface {
 export interface ImageChangeContextInterface {
   handleImageChange: (
     e: ChangeEvent<HTMLInputElement>,
-    setImageFunction: (image: string) => void
+    setBackgroundFunction: (image: string) => void,
+    setImageFunction: (image: File) => void
   ) => void;
 }

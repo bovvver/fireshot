@@ -2,7 +2,7 @@ import { Link, Button, Box } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm } from "react-hook-form";
 import { LoginRequestData } from "@customTypes/auth";
-import AuthFormInput from "@components/atoms/AuthFormInput/AuthFormInput";
+import CustomTextField from "@components/atoms/CustomTextField/CustomTextField";
 
 const Login = () => {
   const { handleFormSelection, handleLogin } = useAuth();
@@ -29,7 +29,7 @@ const Login = () => {
       onSubmit={handleSubmit(onSubmit)}
       sx={{ my: 3, display: "flex", flexDirection: "column" }}
     >
-      <AuthFormInput
+      <CustomTextField
         name="email"
         control={control}
         rules={{
@@ -38,7 +38,7 @@ const Login = () => {
         errors={errors}
         label="E-mail"
       />
-      <AuthFormInput
+      <CustomTextField
         name="password"
         type="password"
         control={control}

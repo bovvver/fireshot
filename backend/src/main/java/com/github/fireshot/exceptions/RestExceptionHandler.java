@@ -13,19 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestExceptionHandler {
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ResponseDTO<Object>> handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
-        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.CONFLICT.value(), exception.getMessage());
-        return new ResponseEntity<>(responseDTO, HttpStatus.CONFLICT);
+        return finishExceptionHandling(HttpStatus.CONFLICT, exception);
     }
 
     @ExceptionHandler(value = BadCredentialsException.class)
     public ResponseEntity<ResponseDTO<Object>> handleBadCredentialsException(BadCredentialsException exception) {
-        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
-        return new ResponseEntity<>(responseDTO, HttpStatus.UNAUTHORIZED);
+        return finishExceptionHandling(HttpStatus.UNAUTHORIZED, exception);
     }
 
     @ExceptionHandler(value = RegistrationValidationException.class)
     public ResponseEntity<ResponseDTO<Object>> handleRegistrationValidationException(RegistrationValidationException exception) {
-        ResponseDTO<Object> responseDTO = new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
-        return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+        return finishExceptionHandling(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(value = PhotoUploadException.class)
+    public ResponseEntity<ResponseDTO<Object>> handlePhotoUploadException(PhotoUploadException exception) {
+        return finishExceptionHandling(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+    }
+
+    private ResponseEntity<ResponseDTO<Object>> finishExceptionHandling(HttpStatus status, RuntimeException exception) {
+        ResponseDTO<Object> responseDTO = new ResponseDTO<>(status.value(), exception.getMessage());
+        return new ResponseEntity<>(responseDTO, status);
     }
 }
