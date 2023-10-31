@@ -5,6 +5,7 @@ import com.github.fireshot.enums.Role;
 import com.github.fireshot.exceptions.RegistrationValidationException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,10 +61,10 @@ public class UserService implements UserDetailsService {
      * @return {@code UserDetails} - User entity from database.
      * @throws UsernameNotFoundException if User is not found in database.
      */
-    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        MessageFormat.format("username {0} not found", email)
+                        MessageFormat.format("E-mail {0} not found in database.", email)
                 ));
     }
 
@@ -71,16 +72,23 @@ public class UserService implements UserDetailsService {
         Pattern emailRegex = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
         Pattern passwordRegex = Pattern.compile("^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,}$");
 
+        if (user.email() == null)
+            throw new RegistrationValidationException("Please insert your e-mail.");
+        if (user.password() == null)
+            throw new RegistrationValidationException("Please insert your password.");
+
         Matcher emailMatcher = emailRegex.matcher(user.email());
         Matcher passwordMatcher = passwordRegex.matcher(user.password());
 
         if (!emailMatcher.matches())
             throw new RegistrationValidationException("Invalid e-mail");
-        if(!passwordMatcher.matches())
-            throw new RegistrationValidationException("Password is to weak.");
-        if(!user.password().equals(user.confirmPassword()))
+        if (!passwordMatcher.matches())
+            throw new RegistrationValidationException("Password is too weak.");
+        if (!user.password().equals(user.confirmPassword()))
             throw new RegistrationValidationException("Passwords doesn't match.");
-        if(isUserExistsByNickname(user.nickname()))
+        if (user.nickname() == null || user.nickname().isEmpty())
+            throw new RegistrationValidationException("Please insert your nickname.");
+        if (isUserExistsByNickname(user.nickname()))
             throw new UserAlreadyExistsException("User with this nickname already exists.");
         if (isUserExistsByEmail(user.email()))
             throw new UserAlreadyExistsException("User with this e-mail already exists.");

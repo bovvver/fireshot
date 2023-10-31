@@ -3,7 +3,7 @@ package com.github.fireshot.exceptions;
 import com.github.fireshot.dto.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +16,8 @@ public class RestExceptionHandler {
         return finishExceptionHandling(HttpStatus.CONFLICT, exception);
     }
 
-    @ExceptionHandler(value = BadCredentialsException.class)
-    public ResponseEntity<ResponseDTO<Object>> handleBadCredentialsException(BadCredentialsException exception) {
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<ResponseDTO<Object>> handleBadCredentialsException(AuthenticationException exception) {
         return finishExceptionHandling(HttpStatus.UNAUTHORIZED, exception);
     }
 

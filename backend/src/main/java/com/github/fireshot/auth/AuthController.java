@@ -28,12 +28,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDTO<Object>> logout() {
+    public ResponseEntity<ResponseDTO<String>> logout() {
         return authService.logout();
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<ResponseDTO<String>> token(@CookieValue(name = "refresh-token") String refreshToken) {
-        return authService.token(refreshToken);
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseDTO<String>> refresh(@CookieValue(name = "refresh-token") String refreshToken, @CookieValue(name = "logged-user") String username) {
+        return authService.refresh(refreshToken, username);
     }
 }

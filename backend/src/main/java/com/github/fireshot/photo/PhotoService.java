@@ -20,7 +20,7 @@ public class PhotoService {
     public ResponseEntity<ResponseDTO<Object>> uploadPhoto(PhotoRequestDTO photoRequest) {
         MultipartFile photoFile = photoRequest.file();
 
-        if(photoFile == null) throw new PhotoUploadException("Correct photo is not provided.");
+        if (photoFile == null) throw new PhotoUploadException("Correct photo is not provided.");
 
         Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, photoFile.getOriginalFilename());
         try {
@@ -28,8 +28,6 @@ public class PhotoService {
         } catch (IOException e) {
             throw new PhotoUploadException("Error when uploading a photo.");
         }
-
-        System.out.println(UPLOAD_DIRECTORY);
 
         ResponseDTO<Object> response = new ResponseDTO<>(HttpStatus.OK.value(), "Photo added.");
         return new ResponseEntity<>(response, HttpStatus.OK);
