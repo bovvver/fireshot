@@ -18,8 +18,8 @@ export const ModalTitle = styled(Typography)`
   text-align: center;
   font-size: 1.5rem;
   font-familly: "Fredoka", sans-serif;
-  ${({ modalTitle }: { modalTitle: string }) =>
-    `margin: ${modalTitle === "" ? 0 : "8px"};`}
+  ${({ modaltitle }: { modaltitle: string }) =>
+    `margin: ${modaltitle === "" ? 0 : "8px"};`}
 `;
 
 export const SearchBar = styled(Paper)`

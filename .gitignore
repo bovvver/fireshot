@@ -4,9 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-access-refresh-token-keys
-access-token.*
-refresh-token.*
 
 ### STS ###
 .apt_generated
@@ -66,3 +63,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+uploads

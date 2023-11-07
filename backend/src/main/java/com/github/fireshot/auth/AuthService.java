@@ -3,91 +3,131 @@ package com.github.fireshot.auth;
 import com.github.fireshot.dto.LoginRequestDTO;
 import com.github.fireshot.dto.RegisterRequestDTO;
 import com.github.fireshot.dto.ResponseDTO;
-import com.github.fireshot.dto.TokensDTO;
-import com.github.fireshot.security.TokenGenerator;
+import com.github.fireshot.security.JwtService;
+import com.github.fireshot.user.User;
+import com.github.fireshot.user.UserRepository;
 import com.github.fireshot.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import com.github.fireshot.utils.Utility;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class AuthService {
-    /**
-     * UserService component containing whole business logic of {@code User.class}
-     */
-    @Autowired
-    private UserService userService;
-    /**
-     * TokenGenerator component containing logic used to generate JWT access tokens
-     * and refresh tokens
-     */
-    @Autowired
-    private TokenGenerator tokenGenerator;
-    /**
-     * DaoAuthenticationProvider component used to authenticate users
-     * based on information stored in the database.
-     */
-    @Autowired
-    private DaoAuthenticationProvider daoAuthenticationProvider;
-    /**
-     * JwtAuthenticationProvider component used to authenticate users
-     * based on information stored in the JWT token.
-     * This component is able to read token details and JWT signature.
-     */
-    @Autowired
-    @Qualifier("jwtRefreshTokenAuthProvider")
-    private JwtAuthenticationProvider refreshTokenAuthProvider;
+    private final UserRepository repository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final String DOMAIN;
+    private final long JWT_EXPIRATION;
+    private final long REFRESH_EXPIRATION;
 
-    public ResponseEntity<ResponseDTO<String>> register(RegisterRequestDTO registerRequestDTO) {
-        userService.createUser(registerRequestDTO);
-        UserDetails user = userService.loadUserByUsername(registerRequestDTO.email());
-        Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(user, registerRequestDTO.password(), List.of());
-
-        return completeAuthentication(authentication, HttpStatus.CREATED, "Account created.");
+    public AuthService(UserRepository repository, JwtService jwtService, AuthenticationManager authenticationManager, UserService userService, @Value("${environment.domain}") String DOMAIN, @Value("${environment.jwt.expiration}") long JWT_EXPIRATION, @Value("${environment.jwt.refresh-expiration}") long REFRESH_EXPIRATION) {
+        this.repository = repository;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.DOMAIN = DOMAIN;
+        this.JWT_EXPIRATION = JWT_EXPIRATION;
+        this.REFRESH_EXPIRATION = REFRESH_EXPIRATION;
     }
 
-    public ResponseEntity<ResponseDTO<String>> login(LoginRequestDTO loginRequestDTO) {
-        Authentication authentication = daoAuthenticationProvider.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.email(), loginRequestDTO.password()));
-        return completeAuthentication(authentication, "Logged in.");
+    @Transactional
+    public ResponseEntity<ResponseDTO<String>> register(RegisterRequestDTO request) {
+        userService.createUser(request);
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Account created successfully.");
+
+        return ResponseEntity.ok().body(response);
     }
 
-    public ResponseEntity<ResponseDTO<Object>> logout() {
-        return tokenGenerator.destroyToken();
+    @Transactional
+    public ResponseEntity<ResponseDTO<String>> login(LoginRequestDTO request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        User user = repository.findByEmail(request.email()).orElseThrow(() -> new BadCredentialsException("E-mail or password incorrect. Please try again."));
+
+        String userEmail = user.getEmail();
+
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("loggedUser", userEmail);
+
+        return finishAuthentication(jwtService.generateToken(user), jwtService.generateRefreshToken(user), userEmail, "Logged in.", responseMap);
     }
 
-    public ResponseEntity<ResponseDTO<String>> token(String refreshToken) {
-        Authentication authentication = refreshTokenAuthProvider.authenticate(new BearerTokenAuthenticationToken(refreshToken));
-        return completeAuthentication(authentication, "Session refreshed.");
-    }
+    @Transactional
+    public ResponseEntity<ResponseDTO<String>> logout() {
+        String deleteJwtCookie = destroyCookie("jwt-token");
+        String deleteRefreshCookie = destroyCookie("refresh-token");
+        String deleteLoggedUser = destroyCookie("logged-user");
 
-    private ResponseEntity<ResponseDTO<String>> completeAuthentication(Authentication authentication, HttpStatus status, String message) {
-        TokensDTO tokens = tokenGenerator.getTokens(authentication);
-
-        HashMap<String, String> accessTokenHashMap = new HashMap<>();
-        accessTokenHashMap.put("nickname", authentication.getName());
-        accessTokenHashMap.put("accessToken", tokens.accessToken());
-
-        ResponseDTO<String> response = new ResponseDTO<>(status.value(), message, accessTokenHashMap);
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Logged out.");
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, tokens.refreshTokenCookie())
-                .header(HttpHeaders.SET_COOKIE, tokens.isRefreshTokenPresentCookie())
+                .header(HttpHeaders.SET_COOKIE, deleteJwtCookie)
+                .header(HttpHeaders.SET_COOKIE, deleteRefreshCookie)
+                .header(HttpHeaders.SET_COOKIE, deleteLoggedUser)
                 .body(response);
     }
 
-    private ResponseEntity<ResponseDTO<String>> completeAuthentication(Authentication authentication, String message) {
-        return completeAuthentication(authentication, HttpStatus.OK, message);
+    public ResponseEntity<ResponseDTO<String>> refresh(String refreshToken, String username) {
+        UserDetails user = userService.loadUserByUsername(username);
+
+        if (!jwtService.isTokenValid(refreshToken, user))
+            throw new ValidationException("Refresh token not valid.");
+
+        refreshToken = jwtService.regenerateRefreshToken(refreshToken, user);
+
+        return finishAuthentication(jwtService.generateToken(user), refreshToken, username, "Session refreshed.");
+    }
+
+    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message, Map<String, String> responseMap) {
+        String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION);
+        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
+        String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
+
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), message, responseMap);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie)
+                .header(HttpHeaders.SET_COOKIE, loggedUser)
+                .body(response);
+    }
+
+    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message) {
+        return finishAuthentication(accessToken, refreshToken, username, message, new HashMap<>());
+    }
+
+    private String createCookie(String name, String value, long expirationMinutes) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(expirationMinutes * 60)
+                .domain(DOMAIN)
+                .sameSite("strict")
+                .build().toString();
+    }
+
+    private String destroyCookie(String name) {
+        return ResponseCookie.from(name, null)
+                .httpOnly(false)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .domain(DOMAIN)
+                .sameSite("strict")
+                .build().toString();
     }
 }

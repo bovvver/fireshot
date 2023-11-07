@@ -1,15 +1,17 @@
 import { Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
-import { AuthFormInputProps } from "@customTypes/componentProps";
+import { AddPhotoTextFieldProps } from "@customTypes/componentProps";
 
-const AuthFormInput = ({
+const AddPhotoTextField = ({
   name,
   control,
   rules,
   errors,
   label,
-  type = "text",
-}: AuthFormInputProps) => {
+  placeholder,
+  multiline = false,
+  rows = 1,
+}: AddPhotoTextFieldProps) => {
   return (
     <Controller
       name={name}
@@ -17,7 +19,12 @@ const AuthFormInput = ({
       rules={rules}
       render={({ field }) => (
         <TextField
-          type={type}
+        fullWidth
+        placeholder={placeholder}
+          sx={{ mt: 2, maxWidth: { xs: "40vh", sm: "50vh" } }}
+          multiline={multiline}
+          rows={rows}
+          type="text"
           error={errors[name] ? true : false}
           label={label}
           margin="dense"
@@ -29,4 +36,4 @@ const AuthFormInput = ({
   );
 };
 
-export default AuthFormInput;
+export default AddPhotoTextField;

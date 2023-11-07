@@ -9,7 +9,7 @@ export interface AuthContextInterface {
   handleAuthentication: (isAuthenticatedParam: boolean) => void;
   handleLogin: (data: LoginRequestData) => void;
   handleRegistration: (data: RegistrationRequestData) => void;
-  handleLogout: () => void;
+  handleRefresh: () => void;
   forceLogout: () => void;
   authenticate: () => void;
 }
@@ -46,6 +46,7 @@ export interface ToastContextInterface {
 export interface ImageChangeContextInterface {
   handleImageChange: (
     e: ChangeEvent<HTMLInputElement>,
-    setImageFunction: (image: string) => void
+    setBackgroundFunction: (image: string) => void,
+    setImageFunction: (image: File) => void
   ) => void;
 }

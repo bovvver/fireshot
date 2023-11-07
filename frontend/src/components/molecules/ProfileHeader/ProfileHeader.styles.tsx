@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Avatar, Paper } from "@mui/material";
+import { Box, Avatar, Paper, Button } from "@mui/material";
 import colors from "@styles/colorTheme";
 
 export const BoxWrapper = styled(Box)`
@@ -27,4 +27,14 @@ export const ProfileStatsWrapper = styled(Box)`
   display: flex;
   flex: 1;
   justify-content: space-evenly;
+`;
+
+export const ButtonWrapper = styled(Box)`
+  display: flex;
+  gap: 0.5em;
+`;
+
+export const EditButton = styled(Button)`
+  margin: 10px 0;
+  flex: 1;
 `;

@@ -7,11 +7,11 @@ import {
   StyledAddIcon,
 } from "./AddImageButton.styles";
 
-const AddImageButton = ({ setImage }: AddImageButtonInterface) => {
+const AddImageButton = ({ setImage, setBackground }: AddImageButtonInterface) => {
   const { handleImageChange } = useImage();
 
   const runImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleImageChange(e, setImage);
+    handleImageChange(e, setBackground, setImage);
   };
 
   return (

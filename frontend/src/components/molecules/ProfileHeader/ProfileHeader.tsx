@@ -10,15 +10,18 @@ import {
   StyledAvatar,
   StyledPaper,
   ProfileStatsWrapper,
+  ButtonWrapper,
+  EditButton,
 } from "./ProfileHeader.styles";
 
 const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
   const [avatar, setAvatar] = useState("");
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const [editable, setEditable] = useState(false);
   const { handleModalOpening } = useModals();
 
-  const handleEditStart = () => {
-    setEditable(true);
+  const handleEditChange = () => {
+    setEditable((prev) => !prev);
   };
 
   const openFollowersModal = () => {
@@ -36,7 +39,10 @@ const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
           <StyledAvatar>S</StyledAvatar>
         ) : (
           <StyledPaper avatar={avatar}>
-            <AddImageButton setImage={setAvatar} />
+            <AddImageButton
+              setBackground={setAvatar}
+              setImage={setSelectedPhoto}
+            />
           </StyledPaper>
         )}
 
@@ -81,9 +87,12 @@ const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
       ) : null}
 
       {editable && loggedUserAccount ? (
-        <Button fullWidth variant="outlined" sx={{ my: 2 }}>
-          Save
-        </Button>
+        <ButtonWrapper>
+          <EditButton variant="outlined" onClick={handleEditChange}>
+            Cancel
+          </EditButton>
+          <EditButton variant="contained">Save</EditButton>
+        </ButtonWrapper>
       ) : null}
 
       {!editable && loggedUserAccount ? (
@@ -91,7 +100,7 @@ const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
           fullWidth
           variant="outlined"
           sx={{ my: 2 }}
-          onClick={handleEditStart}
+          onClick={handleEditChange}
         >
           Edit profile
         </Button>

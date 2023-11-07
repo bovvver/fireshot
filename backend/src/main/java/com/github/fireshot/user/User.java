@@ -36,6 +36,7 @@ public class User implements UserDetails {
     private String nickname;
     private String password;
     private LocalDate passwordExpiration;
+    private String description;
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<Photo> photos;
     @ElementCollection
@@ -70,6 +71,7 @@ public class User implements UserDetails {
         this.nickname = nickname;
         this.password = password;
         this.passwordExpiration = LocalDate.now().plusDays(passwordExp);
+        this.description = "";
         this.photos = new ArrayList<>();
         this.followers = new LinkedList<>();
         this.following = new LinkedList<>();

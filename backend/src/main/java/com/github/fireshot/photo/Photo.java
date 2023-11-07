@@ -20,16 +20,20 @@ public class Photo {
     @GeneratedValue
     private int id;
     private String source;
+    private String description;
+    private String location;
     private List<String> comments;
     private int likes;
     @ManyToOne
     @JsonIgnore
     private User owner;
 
-    public Photo(String source, List<String> comments, int likes, User owner) {
+    public Photo(String source, String description, String location, List<String> comments, User owner) {
         this.source = source;
+        this.description = source;
+        this.location = source;
         this.comments = comments;
-        this.likes = likes;
+        this.likes = 0;
         this.owner = owner;
     }
 }

@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { TabPanel } from "@mui/lab";
-import { Box, Container, Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import colors from "@styles/colorTheme";
 
-export const ContainerWrapper = styled(Container)`
+export const BoxWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: center;

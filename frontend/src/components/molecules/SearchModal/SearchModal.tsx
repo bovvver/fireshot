@@ -11,7 +11,7 @@ const SearchModal = () => {
   return (
     <Modal open={isModalOpen} onClose={handleModalClose}>
       <PaperWrapper>
-        <ModalTitle modalTitle={modalTitle}>{modalTitle}</ModalTitle>
+        <ModalTitle modaltitle={modalTitle}>{modalTitle}</ModalTitle>
         <SearchBar elevation={3}>
           <InputBase
             sx={{ ml: 1, flex: 1 }}
