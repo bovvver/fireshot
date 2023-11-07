@@ -57,16 +57,12 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         User user = repository.findByEmail(request.email()).orElseThrow(() -> new BadCredentialsException("E-mail or password incorrect. Please try again."));
 
-        String loggedUser = createCookie("logged-user", user.getEmail(), -1);
+        String userEmail = user.getEmail();
 
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("loggedUser", user.getEmail());
+        responseMap.put("loggedUser", userEmail);
 
-        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Logged in.", responseMap);
-
-        return finishAuthentication(jwtService.generateToken(user), jwtService.generateRefreshToken(user))
-                .header(HttpHeaders.SET_COOKIE, loggedUser)
-                .body(response);
+        return finishAuthentication(jwtService.generateToken(user), jwtService.generateRefreshToken(user), userEmail, "Logged in.", responseMap);
     }
 
     @Transactional
@@ -92,18 +88,25 @@ public class AuthService {
 
         refreshToken = jwtService.regenerateRefreshToken(refreshToken, user);
 
-        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Session refreshed.");
-
-        return finishAuthentication(jwtService.generateToken(user), refreshToken).body(response);
+        return finishAuthentication(jwtService.generateToken(user), refreshToken, username, "Session refreshed.");
     }
 
-    private ResponseEntity.BodyBuilder finishAuthentication(String accessToken, String refreshToken) {
+    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message, Map<String, String> responseMap) {
         String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION);
+        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
         String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
+
+        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), message, responseMap);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie)
-                .header(HttpHeaders.SET_COOKIE, refreshCookie);
+                .header(HttpHeaders.SET_COOKIE, refreshCookie)
+                .header(HttpHeaders.SET_COOKIE, loggedUser)
+                .body(response);
+    }
+
+    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message) {
+        return finishAuthentication(accessToken, refreshToken, username, message, new HashMap<>());
     }
 
     private String createCookie(String name, String value, long expirationMinutes) {

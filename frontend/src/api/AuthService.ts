@@ -19,7 +19,6 @@ export const executeLogin = async (
 export const executeLogout = async (): AuthRequestResponse => {
   return await apiClient
     .post(logoutPath, null, { withCredentials: true })
-    .then((res) => res.data);
 };
 
 export const executeRegistration = async (

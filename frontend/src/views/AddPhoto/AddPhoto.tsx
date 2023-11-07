@@ -44,8 +44,8 @@ const AddPhoto = () => {
       data.photo = selectedPhoto;
 
       try {
-        const result = await executeAddPhoto(data);
-        handleToastOpening(result.data.message, "success");
+        await executeAddPhoto(data);
+        handleToastOpening("Photo added.", "success");
         navigate(ROOT_PATH);
       } catch (e) {
         handleToastOpening(

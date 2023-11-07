@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useEffect } from "react";
 import NavBar from "@components/organisms/NavBar/NavBar";
 import AppTheme from "@styles/AppTheme";
 import { CssBaseline, Box } from "@mui/material";
@@ -21,39 +21,45 @@ import AddPhoto from "../AddPhoto/AddPhoto";
 import Toast from "@components/atoms/Toast/Toast";
 import Notifications from "@components/organisms/Notifications/Notifications";
 import CommentDrawer from "@components/organisms/CommentDrawer/CommentDrawer";
-import { useModals, useAuth, useToast } from "@hooks/contextHooks";
+import { useModals, useAuth } from "@hooks/contextHooks";
 import PhotoSection from "../PhotoSection/PhotoSection";
 import DeletePhotoModal from "@components/molecules/DeletePhotoModal/DeletePhotoModal";
-import { jwtToken } from "@env/environments";
 import { apiClient } from "@api/ApiClient";
+import { authPaths } from "@config/apiPaths";
 
 const App = () => {
-  const { handleLogout, authenticate } = useAuth();
+  const { handleRefresh } = useAuth();
   const { isDrawerOpen } = useModals();
-  const { handleToastOpening } = useToast();
   const location = useLocation();
 
-  useMemo(() => {
-    apiClient.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        if (error.response && error.response.status == 401) {
-          handleToastOpening(error.response.data.message, "error");
-          handleLogout();
-        } else {
-          return Promise.reject(error);
-        }
+  let refreshCount = 0;
+
+  apiClient.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async (error) => {
+      const response = error.response;
+      const request = error.config;
+
+      if (response && (response.status === 401 || response.status === 403)) {
+        if (refreshCount < 1) {
+          refreshCount++;
+          await handleRefresh();
+
+          if (!Object.values(authPaths).includes(request.url)) {
+            apiClient.request(request);
+            refreshCount = 0;
+          }
+        } else refreshCount = 0;
+      } else {
+        return Promise.reject(error);
       }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }
+  );
 
   useEffect(() => {
-    if (localStorage.getItem(jwtToken) !== null) {
-      authenticate();
-    }
+    handleRefresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

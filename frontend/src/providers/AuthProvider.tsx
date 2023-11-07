@@ -1,6 +1,6 @@
 import { useState, createContext, ReactNode } from "react";
 import { AuthContextInterface } from "@customTypes/providers";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LoginRequestData, RegistrationRequestData } from "@customTypes/auth";
 import {
   executeLogin,
@@ -8,9 +8,7 @@ import {
   executeRefresh,
   executeRegistration,
 } from "@api/AuthService";
-import { jwtToken } from "@env/environments";
-import Cookies from "universal-cookie";
-import { ROOT_PATH } from "@config/routes";
+import { ROOT_PATH, LOGIN_PATH } from "@config/routes";
 import { useToast } from "@hooks/contextHooks";
 import { AxiosError } from "axios";
 
@@ -21,7 +19,7 @@ export const AuthContext = createContext<AuthContextInterface>({
   handleAuthentication: () => {},
   handleLogin: () => {},
   handleRegistration: () => {},
-  handleLogout: () => {},
+  handleRefresh: () => {},
   forceLogout: () => {},
   authenticate: () => {},
 });
@@ -31,6 +29,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { handleToastOpening } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleFormSelection = (isLoginForm: boolean) => {
     setIsLoginFormSelected(isLoginForm);
@@ -44,10 +43,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await executeLogin(data);
 
     if (response && response.data.body) {
-      const { accessToken } = response.data.body;
       const { message } = response.data;
 
-      localStorage.setItem(jwtToken, accessToken);
       handleToastOpening(message, "success");
       authenticate();
     }
@@ -65,19 +62,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleLogout = async () => {
-    const cookies = new Cookies();
-
+  const handleRefresh = async () => {
     try {
-      if (cookies.get("refresh-present")) {
-        const response = await executeRefresh();
-        if (response && response.data.body) {
-          const { accessToken } = response.data.body;
-          const { message } = response.data;
-
-          localStorage.setItem(jwtToken, accessToken);
-          handleToastOpening(message, "info");
-        }
+      const response = await executeRefresh();
+      if (response && response.data.body) {
+        authenticate();
       }
     } catch (e) {
       forceLogout();
@@ -87,7 +76,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const forceLogout = async () => {
     try {
       const response = await executeLogout();
-      localStorage.removeItem(jwtToken);
       setIsAuthenticated(false);
       navigate(ROOT_PATH);
       handleToastOpening(response.data.message, "info");
@@ -98,7 +86,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const authenticate = () => {
     setIsAuthenticated(true);
-    navigate(ROOT_PATH);
+
+    if (location.pathname === LOGIN_PATH) {
+      navigate(ROOT_PATH);
+    } else {
+      navigate(location.pathname);
+    }
   };
 
   return (
@@ -110,7 +103,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleAuthentication,
         handleLogin,
         handleRegistration,
-        handleLogout,
+        handleRefresh,
         forceLogout,
         authenticate,
       }}
