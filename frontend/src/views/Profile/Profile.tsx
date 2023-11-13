@@ -1,5 +1,6 @@
 import { Container, Box, ImageList, ImageListItem } from "@mui/material";
 import ProfileHeader from "@components/molecules/ProfileHeader/ProfileHeader";
+import { useParams } from "react-router-dom";
 
 // TODO: Static content for development. Remove later.
 const itemData = [
@@ -55,6 +56,10 @@ const itemData = [
 ];
 
 const Profile = () => {
+  const { nickname } = useParams();
+
+  console.log(nickname);
+
   return (
     <Container maxWidth="md">
       <ProfileHeader loggedUserAccount={true} />

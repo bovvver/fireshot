@@ -7,4 +7,5 @@ export const authPaths = {
 
 export const photoPaths = {
   addPhotoPath: "/upload",
+  updateProfilePath: "/avatar",
 };

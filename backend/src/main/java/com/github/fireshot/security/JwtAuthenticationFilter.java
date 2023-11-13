@@ -29,12 +29,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         Cookie[] cookieArray = request.getCookies();
         Cookie jwtCookie = null;
+        Cookie user = null;
 
         if (cookieArray != null) {
             jwtCookie = Arrays.stream(request.getCookies()).filter(el -> Objects.equals(el.getName(), "jwt-token")).findAny().orElse(null);
+            user = Arrays.stream(request.getCookies()).filter(el -> Objects.equals(el.getName(), "logged-user")).findAny().orElse(null);
         }
 
-        if (jwtCookie == null) {
+        if (jwtCookie == null || user == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(jwt, user.getValue())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
