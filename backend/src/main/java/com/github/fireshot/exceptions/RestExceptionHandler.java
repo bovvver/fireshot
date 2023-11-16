@@ -2,6 +2,7 @@ package com.github.fireshot.exceptions;
 
 import com.github.fireshot.auth.AuthService;
 import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.ResponseMapDTO;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.FileNotFoundException;
 
 @RestController
 @ControllerAdvice
@@ -55,8 +58,13 @@ public class RestExceptionHandler {
         return finishExceptionHandling(HttpStatus.NOT_FOUND, exception);
     }
 
+    @ExceptionHandler(value = FileNotFoundException.class)
+    public ResponseEntity<ResponseDTO<Object>> handleFileNotFoundException(FileNotFoundException exception) {
+        return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
     @ExceptionHandler(value = SignatureException.class)
-    public ResponseEntity<ResponseDTO<String>> handleSignatureException() {
+    public ResponseEntity<ResponseMapDTO> handleSignatureException() {
         return authService.logout();
     }
 

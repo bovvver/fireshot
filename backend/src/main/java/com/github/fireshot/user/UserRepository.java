@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * @return {@code Optional<User>} found by email, if exists.
      */
     Optional<User> findByEmail(String email);
+    Optional<User> findByNickname(String nickname);
 
     /**
      * Checks if User exists by email.

@@ -5,6 +5,7 @@ import com.github.fireshot.dto.ResponseDTO;
 import com.github.fireshot.exceptions.PhotoUploadException;
 import com.github.fireshot.user.User;
 import com.github.fireshot.user.UserService;
+import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -72,7 +72,7 @@ public class PhotoService {
     }
 
     private File createImageFolder(String path, String username) {
-        File imageFolder = new File(System.getProperty("user.dir") + path + "/" + username);
+        File imageFolder = new File(System.getProperty("user.dir") + "/" + path + "/" + username);
         if (!imageFolder.exists()) imageFolder.mkdirs();
         return imageFolder;
     }
@@ -118,10 +118,26 @@ public class PhotoService {
 
     private void saveToDatabase(PhotoRequestDTO request, String username, File imageFile) throws IOException {
         User user = (User) userService.loadUserByUsername(username);
-        Path canonicalUserDir = new File(System.getProperty("user.dir") + UPLOAD_PATH).getCanonicalFile().toPath();
+        Path canonicalUserDir = new File(System.getProperty("user.dir")).getCanonicalFile().toPath();
         String relativePath = canonicalUserDir.relativize(imageFile.toPath()).toString().replace("\\", "/");
 
         Photo photo = new Photo(relativePath, request.description(), request.location(), user);
         photoRepository.save(photo);
+    }
+
+    public byte[] getPhoto(String username, String photo, String basePath) throws IOException {
+        String path = String.format("%s/%s/%s", basePath, username, photo);
+        File file = new File(path);
+        InputStream in = new FileInputStream(file);
+
+        return IOUtils.toByteArray(in);
+    }
+
+    public byte[] getPhoto(String username, String photo) throws IOException {
+        return getPhoto(username, photo, UPLOAD_PATH);
+    }
+
+    public byte[] getPhoto(String username) throws IOException {
+        return getPhoto(username, AVATAR_NAME, AVATAR_PATH);
     }
 }

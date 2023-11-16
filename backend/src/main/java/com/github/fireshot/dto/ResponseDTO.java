@@ -1,10 +1,20 @@
 package com.github.fireshot.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public record ResponseDTO<T>(int statusCode, String message, Map<String, T> body) {
+@AllArgsConstructor
+@Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ResponseDTO<T> {
+    int statusCode;
+    String message;
+    T body;
+
     public ResponseDTO(int statusCode, String message) {
-        this(statusCode, message, new HashMap<>());
+        this.statusCode = statusCode;
+        this.message = message;
+        this.body = null;
     }
 }
