@@ -8,7 +8,7 @@ import { Routes, Route } from "react-router-dom";
 import {
   ROOT_PATH,
   LOGIN_PATH,
-  PROFILE_PATH,
+  PROFILE_PATH_W_PARAM,
   ADD_PATH,
   PHOTO_PATH,
 } from "@config/routes";
@@ -69,7 +69,7 @@ const App = () => {
 
   const protectedRoutes = [
     { path: ROOT_PATH, component: <Home /> },
-    { path: PROFILE_PATH, component: <Profile /> },
+    { path: PROFILE_PATH_W_PARAM, component: <Profile /> },
     { path: ADD_PATH, component: <AddPhoto /> },
     { path: PHOTO_PATH, component: <PhotoSection /> },
   ];

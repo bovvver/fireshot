@@ -11,10 +11,13 @@ import {
 import { ROOT_PATH, LOGIN_PATH } from "@config/routes";
 import { useToast } from "@hooks/contextHooks";
 import { AxiosError } from "axios";
+import Cookies from "universal-cookie";
+import { userCookie } from "@env/environments";
 
 export const AuthContext = createContext<AuthContextInterface>({
   isLoginFormSelected: true,
   isAuthenticated: false,
+  loggedUser: "",
   handleFormSelection: () => {},
   handleAuthentication: () => {},
   handleLogin: () => {},
@@ -27,6 +30,7 @@ export const AuthContext = createContext<AuthContextInterface>({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoginFormSelected, setIsLoginFormSelected] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loggedUser, setLoggedUser] = useState("");
   const { handleToastOpening } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -85,7 +89,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const authenticate = () => {
+    const cookies = new Cookies();
     setIsAuthenticated(true);
+    setLoggedUser(cookies.get(userCookie));
 
     if (location.pathname === LOGIN_PATH) {
       navigate(ROOT_PATH);
@@ -99,6 +105,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         isLoginFormSelected,
         handleFormSelection,
+        loggedUser,
         isAuthenticated,
         handleAuthentication,
         handleLogin,

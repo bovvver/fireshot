@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -28,11 +29,11 @@ public class Photo {
     @JsonIgnore
     private User owner;
 
-    public Photo(String source, String description, String location, List<String> comments, User owner) {
+    public Photo(String source, String description, String location, User owner) {
         this.source = source;
-        this.description = source;
-        this.location = source;
-        this.comments = comments;
+        this.description = description;
+        this.location = location;
+        this.comments = new LinkedList<>();
         this.likes = 0;
         this.owner = owner;
     }

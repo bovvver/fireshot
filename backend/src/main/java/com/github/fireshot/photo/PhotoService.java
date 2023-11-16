@@ -3,6 +3,8 @@ package com.github.fireshot.photo;
 import com.github.fireshot.dto.PhotoRequestDTO;
 import com.github.fireshot.dto.ResponseDTO;
 import com.github.fireshot.exceptions.PhotoUploadException;
+import com.github.fireshot.user.User;
+import com.github.fireshot.user.UserService;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,15 +17,20 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Date;
 
 @Service
 public class PhotoService {
+    private final PhotoRepository photoRepository;
+    private final UserService userService;
     private final String UPLOAD_PATH;
     private final String AVATAR_PATH;
     private final String AVATAR_NAME;
 
-    public PhotoService(@Value("${environment.upload.path}") String UPLOAD_PATH, @Value("${environment.avatar.path}") String AVATAR_PATH, @Value("${environment.avatar.name}") String AVATAR_NAME) {
+    public PhotoService(UserService userService, PhotoRepository photoRepository, @Value("${environment.upload.path}") String UPLOAD_PATH, @Value("${environment.avatar.path}") String AVATAR_PATH, @Value("${environment.avatar.name}") String AVATAR_NAME) {
+        this.userService = userService;
+        this.photoRepository = photoRepository;
         this.UPLOAD_PATH = UPLOAD_PATH;
         this.AVATAR_PATH = AVATAR_PATH;
         this.AVATAR_NAME = AVATAR_NAME;
@@ -34,7 +41,7 @@ public class PhotoService {
         if (photoFile == null || photoFile.getOriginalFilename() == null)
             throw new PhotoUploadException("Correct photo is not provided.");
 
-        saveImage(photoFile, username, path);
+        saveImage(photoRequest, username, path);
 
         ResponseDTO<Object> response = new ResponseDTO<>(HttpStatus.OK.value(), "Photo added.");
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -48,14 +55,16 @@ public class PhotoService {
         return uploadPhoto(username, photoRequest, AVATAR_PATH);
     }
 
-    private void saveImage(MultipartFile image, String username, String path) {
+    private void saveImage(PhotoRequestDTO request, String username, String path) {
+        MultipartFile image = request.file();
+        String filename = image.getOriginalFilename();
         try {
             BufferedImage bufferedPhotoFile = resizeImage(ImageIO.read(image.getInputStream()));
             File imageFolder = createImageFolder(path, username);
-            String[] fileParts = validateFileFormat(image.getOriginalFilename());
+            String[] fileParts = validateFileFormat(filename);
 
             if (path.equals(AVATAR_PATH)) addAvatarPhoto(imageFolder, bufferedPhotoFile, fileParts);
-            else addGalleryPhoto(imageFolder, bufferedPhotoFile, fileParts);
+            else addGalleryPhoto(request, username, imageFolder, bufferedPhotoFile, fileParts);
 
         } catch (IOException e) {
             throw new PhotoUploadException("Error while uploading the file. Please try again.");
@@ -91,8 +100,9 @@ public class PhotoService {
         return Scalr.resize(originalImage, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 600, Scalr.OP_ANTIALIAS);
     }
 
-    private void addGalleryPhoto(File imageFolder, BufferedImage bufferedPhotoFile, String[] fileParts) throws IOException {
+    private void addGalleryPhoto(PhotoRequestDTO request, String username, File imageFolder, BufferedImage bufferedPhotoFile, String[] fileParts) throws IOException {
         File outputFile = createOutputFile(imageFolder, fileParts);
+        saveToDatabase(request, username, outputFile);
         writeImageToFile(bufferedPhotoFile, fileParts[1], outputFile);
     }
 
@@ -104,5 +114,14 @@ public class PhotoService {
             newImage.createGraphics().drawImage(bufferedPhotoFile, 0, 0, Color.BLACK, null);
             writeImageToFile(newImage, "jpg", new File(imageFolder, AVATAR_NAME));
         }
+    }
+
+    private void saveToDatabase(PhotoRequestDTO request, String username, File imageFile) throws IOException {
+        User user = (User) userService.loadUserByUsername(username);
+        Path canonicalUserDir = new File(System.getProperty("user.dir") + UPLOAD_PATH).getCanonicalFile().toPath();
+        String relativePath = canonicalUserDir.relativize(imageFile.toPath()).toString().replace("\\", "/");
+
+        Photo photo = new Photo(relativePath, request.description(), request.location(), user);
+        photoRepository.save(photo);
     }
 }

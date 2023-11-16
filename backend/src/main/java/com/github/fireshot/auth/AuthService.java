@@ -92,9 +92,12 @@ public class AuthService {
     }
 
     private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message, Map<String, String> responseMap) {
-        String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION);
-        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
-        String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
+        String nickname = ((User) userService.loadUserByUsername(username)).getNickname();
+
+        String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION, true);
+        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), true);
+        String loggedUserNickname = createCookie("nickname", nickname, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), false);
+        String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), true);
 
         ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), message, responseMap);
 
@@ -102,6 +105,7 @@ public class AuthService {
                 .header(HttpHeaders.SET_COOKIE, jwtCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie)
                 .header(HttpHeaders.SET_COOKIE, loggedUser)
+                .header(HttpHeaders.SET_COOKIE, loggedUserNickname)
                 .body(response);
     }
 
@@ -109,9 +113,9 @@ public class AuthService {
         return finishAuthentication(accessToken, refreshToken, username, message, new HashMap<>());
     }
 
-    private String createCookie(String name, String value, long expirationMinutes) {
+    private String createCookie(String name, String value, long expirationMinutes, boolean httpOnly) {
         return ResponseCookie.from(name, value)
-                .httpOnly(true)
+                .httpOnly(httpOnly)
                 .secure(true)
                 .path("/")
                 .maxAge(expirationMinutes * 60)

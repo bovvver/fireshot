@@ -21,12 +21,17 @@ const ImageChangeProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
+      if(file.size > 5 * 1024 * 1024){
+        handleToastOpening("Maximum image size is 5MB.", "warning");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target) {
           const result = getFileType(event.target.result?.toString());
 
-          if (result === null || !result.includes("image")) {
+          if (result === null) {
             handleToastOpening("Please, select image file.", "warning");
             return;
           }

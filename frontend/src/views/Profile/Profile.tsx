@@ -1,6 +1,7 @@
 import { Container, Box, ImageList, ImageListItem } from "@mui/material";
 import ProfileHeader from "@components/molecules/ProfileHeader/ProfileHeader";
 import { useParams } from "react-router-dom";
+import { useAuth } from "@hooks/contextHooks";
 
 // TODO: Static content for development. Remove later.
 const itemData = [
@@ -56,13 +57,12 @@ const itemData = [
 ];
 
 const Profile = () => {
+  const { loggedUser } = useAuth();
   const { nickname } = useParams();
-
-  console.log(nickname);
 
   return (
     <Container maxWidth="md">
-      <ProfileHeader loggedUserAccount={true} />
+      <ProfileHeader loggedUserAccount={loggedUser === nickname} />
       <Box>
         <ImageList sx={{ width: "100%" }} cols={3}>
           {itemData.map((item) => (
