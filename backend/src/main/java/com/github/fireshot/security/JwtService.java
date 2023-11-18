@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -25,13 +26,15 @@ public class JwtService {
     private final long REFRESH_EXPIRATION;
     private final String ISSUER;
     private final String AUDIENCE;
+    private UserDetailsService userDetailsService;
 
-    public JwtService(@Value("${environment.secret.key}") String SECRET_KEY, @Value("${environment.jwt.expiration}") long JWT_EXPIRATION, @Value("${environment.issuer}") String ISSUER, @Value("${environment.audience}") String AUDIENCE, @Value("${environment.jwt.refresh-expiration}") long REFRESH_EXPIRATION) {
+    public JwtService(@Value("${environment.secret.key}") String SECRET_KEY, @Value("${environment.jwt.expiration}") long JWT_EXPIRATION, @Value("${environment.issuer}") String ISSUER, @Value("${environment.audience}") String AUDIENCE, @Value("${environment.jwt.refresh-expiration}") long REFRESH_EXPIRATION, UserDetailsService userDetailsService) {
         this.SECRET_KEY = SECRET_KEY;
         this.JWT_EXPIRATION = JWT_EXPIRATION;
         this.REFRESH_EXPIRATION = REFRESH_EXPIRATION;
         this.ISSUER = ISSUER;
         this.AUDIENCE = AUDIENCE;
+        this.userDetailsService = userDetailsService;
     }
 
     public String extractUsername(String token) {
@@ -65,6 +68,11 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return isTokenValid(token, userDetails);
     }
 
     private boolean isTokenExpired(String token) {

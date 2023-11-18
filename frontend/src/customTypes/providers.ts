@@ -1,11 +1,12 @@
 import { SyntheticEvent, ChangeEvent } from "react";
 import { AlertColor } from "@mui/material";
-import { LoginRequestData, RegistrationRequestData } from "./auth";
+import { LoginRequestData, RegistrationRequestData } from "./api";
 
 export interface AuthContextInterface {
   isLoginFormSelected: boolean;
   handleFormSelection: (isLoginForm: boolean) => void;
   isAuthenticated: boolean;
+  loggedUser: string;
   handleAuthentication: (isAuthenticatedParam: boolean) => void;
   handleLogin: (data: LoginRequestData) => void;
   handleRegistration: (data: RegistrationRequestData) => void;

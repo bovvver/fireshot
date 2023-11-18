@@ -1,10 +1,12 @@
 package com.github.fireshot.user;
 
 import com.github.fireshot.dto.RegisterRequestDTO;
+import com.github.fireshot.dto.ResponseDTO;
 import com.github.fireshot.enums.Role;
 import com.github.fireshot.exceptions.RegistrationValidationException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -92,5 +94,12 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException("User with this nickname already exists.");
         if (isUserExistsByEmail(user.email()))
             throw new UserAlreadyExistsException("User with this e-mail already exists.");
+    }
+
+    public ResponseEntity<ResponseDTO<User>> getProfile(String nickname) {
+        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        ResponseDTO<User> response = new ResponseDTO<>(200, "User found.", user);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,8 +1,8 @@
 import { Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
-import { AddPhotoTextFieldProps, AddPhotoFieldValues } from "@customTypes/componentProps";
+import { AddPhotoTextFieldProps,UpdateProfileData } from "@customTypes/componentProps";
 
-const AddPhotoTextField = ({
+const UpdateProfileTextField = ({
   name,
   control,
   rules,
@@ -11,7 +11,7 @@ const AddPhotoTextField = ({
   placeholder,
   multiline = false,
   rows = 1,
-}: AddPhotoTextFieldProps<AddPhotoFieldValues>) => {
+}: AddPhotoTextFieldProps<UpdateProfileData>) => {
   return (
     <Controller
       name={name}
@@ -21,7 +21,6 @@ const AddPhotoTextField = ({
         <TextField
           fullWidth
           placeholder={placeholder}
-          sx={{ mt: 2, maxWidth: { xs: "40vh", sm: "50vh" } }}
           multiline={multiline}
           rows={rows}
           type="text"
@@ -36,4 +35,4 @@ const AddPhotoTextField = ({
   );
 };
 
-export default AddPhotoTextField;
+export default UpdateProfileTextField;

@@ -10,8 +10,8 @@ import {
 } from "./AddPhoto.styles";
 import AddPhotoTextField from "@components/atoms/AddPhotoTextField/AddPhotoTextField";
 import { useForm } from "react-hook-form";
-import { AddPhotoData, AddPhotoFieldValues } from "@customTypes/componentProps";
-import { executeAddPhoto } from "@api/PhotoService";
+import { AddPhotoFieldValues } from "@customTypes/componentProps";
+import { executeAddPhoto } from "@api/ProfileService";
 import { useToast } from "@hooks/contextHooks";
 import { useNavigate } from "react-router-dom";
 import { ROOT_PATH } from "@config/routes";
@@ -39,7 +39,7 @@ const AddPhoto = () => {
     setCurrentTab(newValue);
   };
 
-  const onSubmit = async (data: AddPhotoData) => {
+  const onSubmit = async (data: AddPhotoFieldValues) => {
     if (selectedPhoto != null) {
       data.photo = selectedPhoto;
 

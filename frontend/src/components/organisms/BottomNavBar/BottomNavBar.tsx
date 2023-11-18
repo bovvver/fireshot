@@ -4,12 +4,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import { useModals } from "@hooks/contextHooks";
+import { useAuth, useModals } from "@hooks/contextHooks";
 import { NavBarWrapper } from "./BottomNavBar.styles";
+import { ADD_PATH, ROOT_PATH, PROFILE_PATH } from "@config/routes";
 
 const BottomNavBar = () => {
   const { handleModalOpening, bottomNavValue, handleBottomNavValueChange } =
     useModals();
+  const { loggedUser } = useAuth();
   const navigate = useNavigate();
 
   const openModal = () => {
@@ -26,7 +28,7 @@ const BottomNavBar = () => {
           value=""
           label="Home"
           icon={<HomeIcon />}
-          onClick={() => navigate("/")}
+          onClick={() => navigate(ROOT_PATH)}
         />
         <BottomNavigationAction
           value="search"
@@ -38,13 +40,13 @@ const BottomNavBar = () => {
           value="add"
           label="Add"
           icon={<AddCircleOutlineIcon />}
-          onClick={() => navigate("/add")}
+          onClick={() => navigate(ADD_PATH)}
         />
         <BottomNavigationAction
           value="profile"
           label="Profile"
           icon={<AccountCircleIcon />}
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate(PROFILE_PATH + loggedUser)}
         />
       </BottomNavigation>
     </NavBarWrapper>

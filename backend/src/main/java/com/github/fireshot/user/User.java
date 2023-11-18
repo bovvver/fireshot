@@ -1,9 +1,12 @@
 package com.github.fireshot.user;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.fireshot.enums.Role;
 import com.github.fireshot.photo.Photo;
-import jakarta.validation.constraints.Email;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,44 +20,68 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User class containing structure of user passed to database.
  */
+@JsonIgnoreProperties(value = {"authorities", "username", "accountNonLocked", "credentialsNonExpired", "accountNonExpired"})
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
-    @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
+    @JsonIgnore
     private int id;
+
     @Email
     private String email;
+
     private String nickname;
+
+    @JsonIgnore
     private String password;
+
+    @JsonIgnore
     private LocalDate passwordExpiration;
+
     private String description;
+
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<Photo> photos;
+
     @ElementCollection
     @CollectionTable(name = "user_followers", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "follower_name")
     private List<User> followers;
+
     @ElementCollection
     @CollectionTable(name = "user_following", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "following_name")
     private List<User> following;
+
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Role role;
+
+    @JsonIgnore
     private boolean expired;
+
+    @JsonIgnore
     private boolean locked;
+
+    @JsonIgnore
     private boolean enabled;
+
     @Transient
+    @JsonIgnore
     private int passwordExp = 30;
-//    TODO: private List<Notification> notifications;
+
+    // TODO: private List<Notification> notifications;
 
     /**
      * Creates new User object.
@@ -119,5 +146,22 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @JsonGetter("photos")
+    public List<String> getPhotoSources() {
+        return photos.stream()
+                .map(Photo::getSource)
+                .collect(Collectors.toList());
+    }
+
+    @JsonGetter("followers")
+    public int getFollowersLength() {
+        return this.followers.size();
+    }
+
+    @JsonGetter("following")
+    public int getFollowingLength() {
+        return this.following.size();
     }
 }

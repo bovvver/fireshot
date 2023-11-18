@@ -2,7 +2,7 @@ package com.github.fireshot.auth;
 
 import com.github.fireshot.dto.LoginRequestDTO;
 import com.github.fireshot.dto.RegisterRequestDTO;
-import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.ResponseMapDTO;
 import com.github.fireshot.security.JwtService;
 import com.github.fireshot.user.User;
 import com.github.fireshot.user.UserRepository;
@@ -45,15 +45,15 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseDTO<String>> register(RegisterRequestDTO request) {
+    public ResponseEntity<ResponseMapDTO> register(RegisterRequestDTO request) {
         userService.createUser(request);
-        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Account created successfully.");
+        ResponseMapDTO response = new ResponseMapDTO(HttpStatus.OK.value(), "Account created successfully.");
 
         return ResponseEntity.ok().body(response);
     }
 
     @Transactional
-    public ResponseEntity<ResponseDTO<String>> login(LoginRequestDTO request) {
+    public ResponseEntity<ResponseMapDTO> login(LoginRequestDTO request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         User user = repository.findByEmail(request.email()).orElseThrow(() -> new BadCredentialsException("E-mail or password incorrect. Please try again."));
 
@@ -66,12 +66,12 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseDTO<String>> logout() {
+    public ResponseEntity<ResponseMapDTO> logout() {
         String deleteJwtCookie = destroyCookie("jwt-token");
         String deleteRefreshCookie = destroyCookie("refresh-token");
         String deleteLoggedUser = destroyCookie("logged-user");
 
-        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), "Logged out.");
+        ResponseMapDTO response = new ResponseMapDTO(HttpStatus.OK.value(), "Logged out.");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, deleteJwtCookie)
@@ -80,7 +80,7 @@ public class AuthService {
                 .body(response);
     }
 
-    public ResponseEntity<ResponseDTO<String>> refresh(String refreshToken, String username) {
+    public ResponseEntity<ResponseMapDTO> refresh(String refreshToken, String username) {
         UserDetails user = userService.loadUserByUsername(username);
 
         if (!jwtService.isTokenValid(refreshToken, user))
@@ -91,27 +91,31 @@ public class AuthService {
         return finishAuthentication(jwtService.generateToken(user), refreshToken, username, "Session refreshed.");
     }
 
-    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message, Map<String, String> responseMap) {
-        String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION);
-        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
-        String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION));
+    private ResponseEntity<ResponseMapDTO> finishAuthentication(String accessToken, String refreshToken, String username, String message, Map<String, String> responseMap) {
+        String nickname = ((User) userService.loadUserByUsername(username)).getNickname();
 
-        ResponseDTO<String> response = new ResponseDTO<>(HttpStatus.OK.value(), message, responseMap);
+        String jwtCookie = createCookie("jwt-token", accessToken, JWT_EXPIRATION, true);
+        String loggedUser = createCookie("logged-user", username, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), true);
+        String loggedUserNickname = createCookie("nickname", nickname, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), false);
+        String refreshCookie = createCookie("refresh-token", refreshToken, Utility.convertDaysToMinutes(REFRESH_EXPIRATION), true);
+
+        ResponseMapDTO response = new ResponseMapDTO(HttpStatus.OK.value(), message, responseMap);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie)
                 .header(HttpHeaders.SET_COOKIE, loggedUser)
+                .header(HttpHeaders.SET_COOKIE, loggedUserNickname)
                 .body(response);
     }
 
-    private ResponseEntity<ResponseDTO<String>> finishAuthentication(String accessToken, String refreshToken, String username, String message) {
-        return finishAuthentication(accessToken, refreshToken, username, message, new HashMap<>());
+    private ResponseEntity<ResponseMapDTO> finishAuthentication(String accessToken, String refreshToken, String username, String message) {
+        return finishAuthentication(accessToken, refreshToken, username, message, null);
     }
 
-    private String createCookie(String name, String value, long expirationMinutes) {
+    private String createCookie(String name, String value, long expirationMinutes, boolean httpOnly) {
         return ResponseCookie.from(name, value)
-                .httpOnly(true)
+                .httpOnly(httpOnly)
                 .secure(true)
                 .path("/")
                 .maxAge(expirationMinutes * 60)

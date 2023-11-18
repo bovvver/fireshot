@@ -4,13 +4,14 @@ import AppTheme from "@styles/AppTheme";
 import { CssBaseline, Box } from "@mui/material";
 import BottomNavBar from "@components/organisms/BottomNavBar/BottomNavBar";
 import Home from "../Home/Home";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   ROOT_PATH,
   LOGIN_PATH,
-  PROFILE_PATH,
+  PROFILE_PATH_W_PARAM,
   ADD_PATH,
   PHOTO_PATH,
+  NOT_FOUND,
 } from "@config/routes";
 import Profile from "../Profile/Profile";
 import { useLocation } from "react-router-dom";
@@ -69,9 +70,10 @@ const App = () => {
 
   const protectedRoutes = [
     { path: ROOT_PATH, component: <Home /> },
-    { path: PROFILE_PATH, component: <Profile /> },
+    { path: PROFILE_PATH_W_PARAM, component: <Profile /> },
     { path: ADD_PATH, component: <AddPhoto /> },
     { path: PHOTO_PATH, component: <PhotoSection /> },
+    { path: NOT_FOUND, component: <Navigate to={ROOT_PATH} /> },
   ];
 
   const shouldShowNavBar = location.pathname !== LOGIN_PATH;
