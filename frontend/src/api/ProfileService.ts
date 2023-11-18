@@ -1,8 +1,12 @@
 import { apiClient } from "./ApiClient";
 import { photoPaths } from "@config/apiPaths";
-import { AddPhotoFieldValues, UpdateProfileData } from "@customTypes/componentProps";
+import { ProfileResponse } from "@customTypes/api";
+import {
+  AddPhotoFieldValues,
+  UpdateProfileData,
+} from "@customTypes/componentProps";
 
-const { addPhotoPath, updateProfilePath } = photoPaths;
+const { addPhotoPath, updateProfilePath, fetchProfilePath } = photoPaths;
 
 export const executeAddPhoto = async ({
   photo,
@@ -32,4 +36,10 @@ export const executeProfileUpdate = async ({
   return await apiClient.post(updateProfilePath, formData, {
     withCredentials: true,
   });
+};
+
+export const executeProfileFetching = async (nickname: string): ProfileResponse => {
+  return await apiClient.get(`${fetchProfilePath}/${nickname}`, {
+    withCredentials: true,
+  }).then(res => res.data);
 };

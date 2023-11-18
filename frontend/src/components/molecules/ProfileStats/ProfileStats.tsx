@@ -1,9 +1,10 @@
 import { ProfileStatsWrapper } from "./ProfileStats.styles";
 import ProfileStat from "@components/atoms/ProfileStat/ProfileStat";
 import ProfileStatLink from "@components/atoms/ProfileStatLink/ProfileStatLink";
+import { ProfileStatsProps } from "@customTypes/componentProps";
 import { useModals } from "@hooks/contextHooks";
 
-const ProfileStats = () => {
+const ProfileStats = ({ posts, followers, following }: ProfileStatsProps) => {
   const { handleModalOpening } = useModals();
 
   const openFollowersModal = () => {
@@ -16,16 +17,16 @@ const ProfileStats = () => {
 
   return (
     <ProfileStatsWrapper>
-      <ProfileStat counter={12} title="Posts" />
+      <ProfileStat counter={posts} title="Posts" />
 
       <ProfileStatLink
-        counter={1265}
+        counter={followers}
         title="Followers"
         onClick={openFollowersModal}
       />
 
       <ProfileStatLink
-        counter={11}
+        counter={following}
         title="Following"
         onClick={openFollowingModal}
       />

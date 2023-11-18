@@ -23,20 +23,24 @@ export interface ApiResponseData<T> {
   request: XMLHttpRequest;
 }
 
-// export type AuthRequestResponse = Promise<ApiResponseData<ResponseDTO>>;
-
-
-export type AuthRequestResponse = Promise<ApiResponseData<ResponseDTO>>;
+export type AuthResponse = Promise<ApiResponseData<ResponseDTO<unknown>>>;
 
 // == DTO ==
 
-export interface ResponseDTO {
+export interface ResponseDTO<T> {
   status: number;
   message: string;
-  body?: LoginDTO;
+  body?: T;
 }
 
-export interface LoginDTO {
+export interface UserData {
+  id: number;
+  email: string;
   nickname: string;
-  accessToken: string;
+  description: string;
+  photos: string[];
+  followers: number;
+  following: number;
 }
+
+export type ProfileResponse = Promise<ResponseDTO<UserData>>;

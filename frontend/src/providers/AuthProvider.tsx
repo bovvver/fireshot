@@ -1,7 +1,7 @@
 import { useState, createContext, ReactNode } from "react";
 import { AuthContextInterface } from "@customTypes/providers";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LoginRequestData, RegistrationRequestData } from "@customTypes/auth";
+import { LoginRequestData, RegistrationRequestData } from "@customTypes/api";
 import {
   executeLogin,
   executeLogout,
@@ -69,7 +69,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleRefresh = async () => {
     try {
       const response = await executeRefresh();
-      if (response && response.data.body) {
+      if (response && response.data) {
         authenticate();
       }
     } catch (e) {

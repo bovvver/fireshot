@@ -118,7 +118,7 @@ public class PhotoService {
 
     private void saveToDatabase(PhotoRequestDTO request, String username, File imageFile) throws IOException {
         User user = (User) userService.loadUserByUsername(username);
-        Path canonicalUserDir = new File(System.getProperty("user.dir")).getCanonicalFile().toPath();
+        Path canonicalUserDir = new File(System.getProperty("user.dir") + "/" + UPLOAD_PATH).getCanonicalFile().toPath();
         String relativePath = canonicalUserDir.relativize(imageFile.toPath()).toString().replace("\\", "/");
 
         Photo photo = new Photo(relativePath, request.description(), request.location(), user);

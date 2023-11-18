@@ -1,7 +1,7 @@
 import { Link, Button, Box } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm } from "react-hook-form";
-import { LoginRequestData } from "@customTypes/auth";
+import { LoginRequestData } from "@customTypes/api";
 import CustomTextField from "@components/atoms/CustomTextField/CustomTextField";
 
 const Login = () => {

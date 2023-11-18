@@ -32,7 +32,7 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
         message,
         severity,
         handleToastOpening,
-        handleToastClosing
+        handleToastClosing,
       }}
     >
       {children}

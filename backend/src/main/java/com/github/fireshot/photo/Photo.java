@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -15,10 +16,12 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Photo {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
+    @JsonIgnore
     private int id;
     private String source;
     private String description;

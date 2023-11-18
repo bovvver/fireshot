@@ -4,27 +4,38 @@ import { ProfileHeaderInterface } from "@customTypes/componentProps";
 import { BoxWrapper, StyledAvatar } from "./ProfileHeader.styles";
 import ProfileStats from "../ProfileStats/ProfileStats";
 import ProfileHeaderForm from "../ProfileHeaderForm/ProfileHeaderForm";
+import { baseUrl } from "@env/environments";
 
-const ProfileHeader = ({ loggedUserAccount }: ProfileHeaderInterface) => {
+const ProfileHeader = ({
+  profileData,
+  loggedUserAccount,
+}: ProfileHeaderInterface) => {
   const [editable, setEditable] = useState(false);
 
   const handleEditChange = () => {
     setEditable((prev) => !prev);
   };
 
+  const { email, nickname, description, followers, following, photos } =
+    profileData!;
+
+  const userFirstLetter = nickname[0].toUpperCase();
+  const avatarUrl = `${baseUrl}/avatar/${email}`;
+
   return (
     <>
       {!editable ? (
         <Box>
           <BoxWrapper>
-            <StyledAvatar>S</StyledAvatar>
-            <ProfileStats />
+            <StyledAvatar src={avatarUrl}>{userFirstLetter}</StyledAvatar>
+            <ProfileStats
+              posts={photos.length}
+              followers={followers}
+              following={following}
+            />
           </BoxWrapper>
-          <Typography sx={{ fontWeight: "bold" }}>sampleUser</Typography>
-          <Typography>
-            Hello! I am sampleUser and this is my description. Lorem ipsum dolor
-            sit amet, consectetur adipiscing elit.
-          </Typography>
+          <Typography sx={{ fontWeight: "bold" }}>{nickname}</Typography>
+          <Typography>{description}</Typography>
           {loggedUserAccount ? (
             <Button
               fullWidth

@@ -1,7 +1,7 @@
 import { Link, Button } from "@mui/material";
 import { useAuth } from "@hooks/contextHooks";
 import { useForm, Control } from "react-hook-form";
-import { RegistrationRequestData } from "@customTypes/auth";
+import { RegistrationRequestData } from "@customTypes/api";
 import CustomTextField from "@components/atoms/CustomTextField/CustomTextField";
 import { CustomTextFieldValues } from "@customTypes/componentProps";
 import { BoxWrapper } from "./Registration.styles";

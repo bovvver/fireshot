@@ -1,4 +1,5 @@
 import { Control, FieldErrors, FieldValues } from "react-hook-form";
+import { UserData } from "./api";
 
 export interface CustomTextFieldValues {
   email: string;
@@ -39,7 +40,6 @@ export interface AddPhotoTextFieldProps<T extends FieldValues> {
   rows?: number;
 }
 
-
 export interface AvatarUserField {
   username: string;
   src?: string;
@@ -63,6 +63,7 @@ export interface BackButtonInterface {
 }
 
 export interface ProfileHeaderInterface {
+  profileData: UserData | null;
   loggedUserAccount: boolean;
 }
 
@@ -73,4 +74,10 @@ export interface AddImageButtonInterface {
 
 export interface ProfileHeaderFormProps {
   handleEditChange: () => void;
+}
+
+export interface ProfileStatsProps {
+  posts: number;
+  followers: number;
+  following: number;
 }
