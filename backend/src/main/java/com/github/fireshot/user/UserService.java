@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,6 +71,10 @@ public class UserService implements UserDetailsService {
                 ));
     }
 
+    public UserDetails findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).orElse(null);
+    }
+
     private void validateUser(RegisterRequestDTO user) {
         Pattern emailRegex = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
         Pattern passwordRegex = Pattern.compile("^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\\[\\]:;<>,.?~\\\\-]).{8,}$");
@@ -96,10 +101,50 @@ public class UserService implements UserDetailsService {
             throw new UserAlreadyExistsException("User with this e-mail already exists.");
     }
 
-    public ResponseEntity<ResponseDTO<User>> getProfile(String nickname) {
-        User user = userRepository.findByNickname(nickname).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        ResponseDTO<User> response = new ResponseDTO<>(200, "User found.", user);
+    public ResponseEntity<ResponseDTO<User>> getProfile(String loggedUser, String nickname) {
+        User profileUser = userRepository.findByNickname(nickname).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        User logged = userRepository.findByEmail(loggedUser).orElse(null);
 
+        if (profileUser.getFollowers().contains(logged))
+            profileUser.setFollowed(true);
+
+        ResponseDTO<User> response = new ResponseDTO<>(200, "User found.", profileUser);
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseDTO<Object>> changeFollowProfile(String sourceUserEmail, String targetUserNickname, boolean isFollowing) {
+        User sourceUser = userRepository.findByEmail(sourceUserEmail).orElseThrow(() -> new UsernameNotFoundException(sourceUserEmail + "user not found."));
+        User targetUser = userRepository.findByNickname(targetUserNickname).orElseThrow(() -> new UsernameNotFoundException(targetUserNickname + "user not found."));
+
+        saveFollowToDatabase(sourceUser, targetUser, isFollowing);
+
+        ResponseDTO<Object> response = new ResponseDTO<>(200, (isFollowing ? "Unfollowed " : "Followed ") + targetUserNickname);
+        return ResponseEntity.ok(response);
+    }
+
+    private void saveFollowToDatabase(User sourceUser, User targetUser, boolean isFollowing) {
+        Set<User> targetFollowers = targetUser.getFollowers();
+        Set<User> sourceFollowing = sourceUser.getFollowing();
+
+        if (isFollowing) {
+            if (!targetFollowers.contains(sourceUser) || !sourceFollowing.contains(targetUser))
+                throw new UserAlreadyExistsException(sourceUser.getNickname() + " is not following " + targetUser.getNickname());
+
+            targetFollowers.remove(sourceUser);
+            sourceFollowing.remove(targetUser);
+        } else {
+            if (targetFollowers.contains(sourceUser) || sourceFollowing.contains(targetUser))
+                throw new UserAlreadyExistsException(sourceUser.getNickname() + " is already following " + targetUser.getNickname());
+
+            targetFollowers.add(sourceUser);
+            sourceFollowing.add(targetUser);
+        }
+
+        saveUser(sourceUser);
+        saveUser(targetUser);
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 }

@@ -41,6 +41,7 @@ export interface UserData {
   photos: string[];
   followers: number;
   following: number;
+  followed: boolean;
 }
 
 export type ProfileResponse = Promise<ResponseDTO<UserData>>;

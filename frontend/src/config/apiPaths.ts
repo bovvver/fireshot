@@ -7,6 +7,11 @@ export const authPaths = {
 
 export const photoPaths = {
   addPhotoPath: "/upload",
-  updateProfilePath: "/avatar",
-  fetchProfilePath: "/user/profile"
+  updateProfilePath: "/update",
+  fetchProfilePath: "/user/profile",
+};
+
+export const profilePaths = {
+  followPath: "/user/follow",
+  unfollowPath: "/user/unfollow",
 };

@@ -11,13 +11,11 @@ const { loginPath, logoutPath, registrationPath, refreshPath } = authPaths;
 export const executeLogin = async (
   data: LoginRequestData
 ): AuthResponse => {
-  return await apiClient.post(loginPath, data, {
-    withCredentials: true,
-  });
+  return await apiClient.post(loginPath, data);
 };
 
 export const executeLogout = async (): AuthResponse => {
-  return await apiClient.post(logoutPath, null, { withCredentials: true });
+  return await apiClient.post(logoutPath, null);
 };
 
 export const executeRegistration = async (
@@ -27,5 +25,5 @@ export const executeRegistration = async (
 };
 
 export const executeRefresh = async (): AuthResponse => {
-  return await apiClient.post(refreshPath, null, { withCredentials: true });
+  return await apiClient.post(refreshPath, null);
 };

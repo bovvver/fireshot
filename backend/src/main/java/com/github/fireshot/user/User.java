@@ -16,10 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,15 +51,23 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<Photo> photos;
 
-    @ElementCollection
-    @CollectionTable(name = "user_followers", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "follower_name")
-    private List<User> followers;
+    @ManyToMany
+    @JoinTable(
+            name = "followers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private Set<User> followers;
 
-    @ElementCollection
-    @CollectionTable(name = "user_following", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "following_name")
-    private List<User> following;
+    @ManyToMany
+    @JoinTable(
+            name = "following",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private Set<User> following;
+
+    private boolean followed;
 
     @Enumerated(EnumType.STRING)
     @JsonIgnore
@@ -100,8 +105,9 @@ public class User implements UserDetails {
         this.passwordExpiration = LocalDate.now().plusDays(passwordExp);
         this.description = "";
         this.photos = new ArrayList<>();
-        this.followers = new LinkedList<>();
-        this.following = new LinkedList<>();
+        this.followers = new LinkedHashSet<>();
+        this.following = new LinkedHashSet<>();
+        this.followed = false;
         this.role = role;
         this.expired = expired;
         this.locked = locked;

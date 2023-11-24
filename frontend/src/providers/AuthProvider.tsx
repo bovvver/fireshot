@@ -18,6 +18,7 @@ export const AuthContext = createContext<AuthContextInterface>({
   isLoginFormSelected: true,
   isAuthenticated: false,
   loggedUser: "",
+  handleUserChange: () => {},
   handleFormSelection: () => {},
   handleAuthentication: () => {},
   handleLogin: () => {},
@@ -91,7 +92,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const authenticate = () => {
     const cookies = new Cookies();
     setIsAuthenticated(true);
-    setLoggedUser(cookies.get(userCookie));
+    handleUserChange(cookies.get(userCookie));
 
     if (location.pathname === LOGIN_PATH) {
       navigate(ROOT_PATH);
@@ -100,12 +101,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleUserChange = (newUser: string) => {
+    setLoggedUser(newUser);
+  }
+
   return (
     <AuthContext.Provider
       value={{
         isLoginFormSelected,
         handleFormSelection,
         loggedUser,
+        handleUserChange,
         isAuthenticated,
         handleAuthentication,
         handleLogin,

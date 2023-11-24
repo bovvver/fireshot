@@ -54,7 +54,7 @@ public class JwtService {
         Date expiration = new Date(now.getTime() + Utility.convertMinutesToMilliseconds(expirationInMinutes));
 
         return Jwts
-                .builder()
+            .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setAudience(AUDIENCE)
@@ -66,7 +66,7 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
+    final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 

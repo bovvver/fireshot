@@ -7,6 +7,7 @@ export interface AuthContextInterface {
   handleFormSelection: (isLoginForm: boolean) => void;
   isAuthenticated: boolean;
   loggedUser: string;
+  handleUserChange: (newUser: string) => void;
   handleAuthentication: (isAuthenticatedParam: boolean) => void;
   handleLogin: (data: LoginRequestData) => void;
   handleRegistration: (data: RegistrationRequestData) => void;

@@ -1,6 +1,7 @@
 package com.github.fireshot.photo;
 
 import com.github.fireshot.dto.PhotoRequestDTO;
+import com.github.fireshot.dto.ProfileUpdateDTO;
 import com.github.fireshot.dto.ResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -24,9 +25,9 @@ public class PhotoController {
         return photoService.getPhoto(username, photo);
     }
 
-    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO<Object>> uploadAvatar(@CookieValue(name = "logged-user") String username, PhotoRequestDTO photoRequest) {
-        return photoService.addAvatar(username, photoRequest);
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO<Object>> updateProfile(@CookieValue(name = "logged-user") String username, ProfileUpdateDTO profileUpdate) {
+        return photoService.updateProfile(username, profileUpdate);
     }
 
     @GetMapping(value = "avatar/{username}", produces = MediaType.IMAGE_JPEG_VALUE)

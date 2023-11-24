@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestController
 @ControllerAdvice
@@ -60,6 +61,11 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = FileNotFoundException.class)
     public ResponseEntity<ResponseDTO<Object>> handleFileNotFoundException(FileNotFoundException exception) {
+        return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ResponseDTO<Object>> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception) {
         return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
