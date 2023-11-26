@@ -2,6 +2,7 @@ package com.github.fireshot.user;
 
 import com.github.fireshot.dto.RegisterRequestDTO;
 import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.ResponseSetDTO;
 import com.github.fireshot.enums.Role;
 import com.github.fireshot.exceptions.RegistrationValidationException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
@@ -14,9 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * UserService class containing business logic for {@code User.class}.
@@ -71,8 +74,16 @@ public class UserService implements UserDetailsService {
                 ));
     }
 
-    public UserDetails findByNickname(String nickname) {
+    public UserDetails checkNicknameAvailability(String nickname) {
         return userRepository.findByNickname(nickname).orElse(null);
+    }
+
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
 
     private void validateUser(RegisterRequestDTO user) {
@@ -102,7 +113,7 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<ResponseDTO<User>> getProfile(String loggedUser, String nickname) {
-        User profileUser = userRepository.findByNickname(nickname).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        User profileUser = findByNickname(nickname);
         User logged = userRepository.findByEmail(loggedUser).orElse(null);
 
         if (profileUser.getFollowers().contains(logged))
@@ -113,8 +124,8 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<ResponseDTO<Object>> changeFollowProfile(String sourceUserEmail, String targetUserNickname, boolean isFollowing) {
-        User sourceUser = userRepository.findByEmail(sourceUserEmail).orElseThrow(() -> new UsernameNotFoundException(sourceUserEmail + "user not found."));
-        User targetUser = userRepository.findByNickname(targetUserNickname).orElseThrow(() -> new UsernameNotFoundException(targetUserNickname + "user not found."));
+        User sourceUser = findByEmail(sourceUserEmail);
+        User targetUser = findByNickname(targetUserNickname);
 
         saveFollowToDatabase(sourceUser, targetUser, isFollowing);
 
@@ -142,6 +153,36 @@ public class UserService implements UserDetailsService {
 
         saveUser(sourceUser);
         saveUser(targetUser);
+    }
+
+    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowers(String targetUserNickname) {
+        User targetUser = findByNickname(targetUserNickname);
+
+        ResponseSetDTO<User> response = new ResponseSetDTO<>(200, "Followers fetched.", targetUser.getFollowers());
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowing(String targetUserNickname) {
+        User targetUser = findByNickname(targetUserNickname);
+
+        ResponseSetDTO<User> response = new ResponseSetDTO<>(200, "Followers fetched.", targetUser.getFollowing());
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseSetDTO<String>> searchFromAllUsers(String searchInput) {
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Followers fetched.", searchUserSet(userRepository.findAll(), searchInput));
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowers(String targetUserNickname, String searchInput, boolean searchFollowers ) {
+        User targetUser = findByNickname(targetUserNickname);
+        Set<User> searchableUsers = searchFollowers ? targetUser.getFollowers() : targetUser.getFollowing();
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Followers fetched.", searchUserSet(searchableUsers, searchInput));
+        return ResponseEntity.ok(response);
+    }
+
+    public Set<String> searchUserSet(Collection<User> baseSet, String searchInput) {
+        return baseSet.stream().map(User::getNickname).filter(el -> el.contains(searchInput)).collect(Collectors.toSet());
     }
 
     public void saveUser(User user) {

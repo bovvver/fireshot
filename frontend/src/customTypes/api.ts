@@ -45,3 +45,5 @@ export interface UserData {
 }
 
 export type ProfileResponse = Promise<ResponseDTO<UserData>>;
+
+export type SearchResponse = Promise<ApiResponseData<ResponseDTO<string[]>>>;

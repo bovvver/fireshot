@@ -1,6 +1,6 @@
 import { apiClient } from "./ApiClient";
-import { photoPaths, profilePaths } from "@config/apiPaths";
-import { ProfileResponse } from "@customTypes/api";
+import { photoPaths, profilePaths, searchPaths } from "@config/apiPaths";
+import { ProfileResponse, SearchResponse } from "@customTypes/api";
 import {
   AddPhotoFieldValues,
   UpdateProfileData,
@@ -8,6 +8,7 @@ import {
 
 const { addPhotoPath, updateProfilePath, fetchProfilePath } = photoPaths;
 const { followPath, unfollowPath } = profilePaths;
+const { defaultSearchPath } = searchPaths;
 
 export const executeAddPhoto = async ({
   photo,
@@ -49,4 +50,28 @@ export const executeFollow = async (nickname: string) => {
 
 export const executeUnfollow = async (nickname: string) => {
   return await apiClient.post(`${unfollowPath}/${nickname}`);
+};
+
+export const executeAllUsersSearch = async (
+  searchInput: string
+): SearchResponse => {
+  return await apiClient.get(`${defaultSearchPath}/${searchInput}`);
+};
+
+export const executeUserFollowersSearch = async (
+  nickname: string,
+  searchInput: string
+): SearchResponse => {
+  return await apiClient.get(
+    `${defaultSearchPath}/${nickname}/followers/${searchInput}`
+  );
+};
+
+export const executeUserFollowingSearch = async (
+  nickname: string,
+  searchInput: string
+): SearchResponse => {
+  return await apiClient.get(
+    `${defaultSearchPath}/${nickname}/following/${searchInput}`
+  );
 };

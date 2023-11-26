@@ -20,8 +20,9 @@ export type BottomNavValue = "" | "search" | "add" | "profile";
 
 export interface ModalsContextInterface {
   isModalOpen: boolean;
-  bottomNavValue: BottomNavValue;
   modalTitle: string;
+  modalData: string[];
+  bottomNavValue: BottomNavValue;
   areNotificationsOpen: boolean;
   isDrawerOpen: boolean;
   isDeleteModalOpen: boolean;
@@ -35,6 +36,7 @@ export interface ModalsContextInterface {
   handleNotificationOpen: (newNotificationsState: boolean) => void;
   handleDrawerOpen: (newDrawerState: boolean) => void;
   handleDeleteModalOpening: (newDeleteModalState: boolean) => void;
+  handleModalData: (data: string[]) => void;
 }
 
 export interface ToastContextInterface {

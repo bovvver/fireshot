@@ -15,3 +15,7 @@ export const profilePaths = {
   followPath: "/user/follow",
   unfollowPath: "/user/unfollow",
 };
+
+export const searchPaths = {
+  defaultSearchPath: "/search"
+}

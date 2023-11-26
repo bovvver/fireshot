@@ -71,7 +71,7 @@ public class PhotoService {
         if (!description.equals(""))
             user.setDescription(description);
         if (!nickname.equals("")) {
-            if (userService.findByNickname(nickname) != null)
+            if (userService.checkNicknameAvailability(nickname) != null)
                 throw new UserAlreadyExistsException("This username is already taken.");
             user.setNickname(nickname);
         }

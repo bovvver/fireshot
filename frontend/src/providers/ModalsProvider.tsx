@@ -4,8 +4,9 @@ import { useLocation } from "react-router-dom";
 
 export const ModalsContext = createContext<ModalsContextInterface>({
   isModalOpen: false,
-  bottomNavValue: "",
   modalTitle: "",
+  modalData: [],
+  bottomNavValue: "",
   areNotificationsOpen: false,
   isDrawerOpen: false,
   isDeleteModalOpen: false,
@@ -16,30 +17,37 @@ export const ModalsContext = createContext<ModalsContextInterface>({
   handleNotificationOpen: () => {},
   handleDrawerOpen: () => {},
   handleDeleteModalOpening: () => {},
+  handleModalData: () => {},
 });
 
 const ModalsProvider = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalData, setModalData] = useState<string[]>([]);
   const [areNotificationsOpen, setAreNotificationsOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bottomNavValue, setBottomNavValue] = useState<BottomNavValue>(
     location.pathname.slice(1) as BottomNavValue
   );
-  const [modalTitle, setModalTitle] = useState("");
 
   // SEARCH MODAL
+
+  const handleModalData = (data: string[]) => {
+    setModalData(data);
+  }
 
   const handleModalOpening = (
     isModalOpenParam: boolean,
     title: string = ""
   ) => {
-    setIsModalOpen(isModalOpenParam);
     setModalTitle(title);
+    setIsModalOpen(isModalOpenParam);
   };
 
   const handleModalClose = () => {
+    handleModalData([]);
     setBottomNavValue(location.pathname.slice(1) as BottomNavValue);
     handleModalOpening(false);
   };
@@ -82,6 +90,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
     <ModalsContext.Provider
       value={{
         isModalOpen,
+        modalData,
         handleModalOpening,
         bottomNavValue,
         handleBottomNavValueChange,
@@ -94,6 +103,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
         handleDrawerOpen,
         handleDeleteModalOpening,
         isDeleteModalOpen,
+        handleModalData
       }}
     >
       {children}

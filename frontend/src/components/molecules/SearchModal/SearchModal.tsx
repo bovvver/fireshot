@@ -1,12 +1,12 @@
 import { Box, Modal, IconButton, InputBase, Divider } from "@mui/material";
 import { useModals } from "@hooks/contextHooks";
 import SearchIcon from "@mui/icons-material/Search";
-// import SearchModalNoResults from "@components/atoms/SearchModalNoResults/SearchModalNoResults";
+import SearchModalNoResults from "@components/atoms/SearchModalNoResults/SearchModalNoResults";
 import ModalSearchResult from "@components/atoms/ModalSearchResult/ModalSearchResult";
 import { PaperWrapper, ModalTitle, SearchBar } from "./SearchModal.styles";
 
 const SearchModal = () => {
-  const { isModalOpen, handleModalClose, modalTitle } = useModals();
+  const { isModalOpen, handleModalClose, modalTitle, modalData } = useModals();
 
   return (
     <Modal open={isModalOpen} onClose={handleModalClose}>
@@ -23,17 +23,15 @@ const SearchModal = () => {
           </IconButton>
         </SearchBar>
         <Divider variant="middle" />
-        <Box sx={{ overflowY: "scroll" }}>
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-          <ModalSearchResult username="sampleUser" />
-        </Box>
-
-        {/* <SearchModalNoResults /> */}
+        {modalData.length === 0 ? (
+          <SearchModalNoResults />
+        ) : (
+          <Box sx={{ overflowY: "scroll" }}>
+            {modalData.map((el) => (
+              <ModalSearchResult username={el} />
+            ))}
+          </Box>
+        )}
       </PaperWrapper>
     </Modal>
   );
