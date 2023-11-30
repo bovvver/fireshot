@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,6 +85,10 @@ public class UserService implements UserDetailsService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+    }
+
+    public User findByEmailNullVariant(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     private void validateUser(RegisterRequestDTO user) {
@@ -155,33 +160,35 @@ public class UserService implements UserDetailsService {
         saveUser(targetUser);
     }
 
-    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowers(String targetUserNickname) {
-        User targetUser = findByNickname(targetUserNickname);
+    public ResponseEntity<ResponseSetDTO<String>> getProfileFollowers(String targetUserNickname) {
+        Set<String> followers = findByNickname(targetUserNickname).getFollowers().stream().map(User::getNickname).collect(Collectors.toSet());
 
-        ResponseSetDTO<User> response = new ResponseSetDTO<>(200, "Followers fetched.", targetUser.getFollowers());
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Followers fetched.", followers);
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowing(String targetUserNickname) {
-        User targetUser = findByNickname(targetUserNickname);
+    public ResponseEntity<ResponseSetDTO<String>> getProfileFollowing(String targetUserNickname) {
+        Set<String> following = findByNickname(targetUserNickname).getFollowing().stream().map(User::getNickname).collect(Collectors.toSet());
 
-        ResponseSetDTO<User> response = new ResponseSetDTO<>(200, "Followers fetched.", targetUser.getFollowing());
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Following users fetched.", following);
         return ResponseEntity.ok(response);
     }
 
     public ResponseEntity<ResponseSetDTO<String>> searchFromAllUsers(String searchInput) {
-        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Followers fetched.", searchUserSet(userRepository.findAll(), searchInput));
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "All users fetched.", searchUserSet(userRepository.findAll(), searchInput));
         return ResponseEntity.ok(response);
     }
 
     public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowers(String targetUserNickname, String searchInput, boolean searchFollowers ) {
         User targetUser = findByNickname(targetUserNickname);
         Set<User> searchableUsers = searchFollowers ? targetUser.getFollowers() : targetUser.getFollowing();
-        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Followers fetched.", searchUserSet(searchableUsers, searchInput));
+        ResponseSetDTO<String> response = new ResponseSetDTO<>(200, "Users fetched.", searchUserSet(searchableUsers, searchInput));
         return ResponseEntity.ok(response);
     }
 
     public Set<String> searchUserSet(Collection<User> baseSet, String searchInput) {
+        if(searchInput.equals("")) return new HashSet<>();
+
         return baseSet.stream().map(User::getNickname).filter(el -> el.contains(searchInput)).collect(Collectors.toSet());
     }
 

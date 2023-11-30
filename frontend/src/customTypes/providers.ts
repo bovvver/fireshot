@@ -18,6 +18,11 @@ export interface AuthContextInterface {
 
 export type BottomNavValue = "" | "search" | "add" | "profile";
 
+export interface ModalOpeningFunctionInterface {
+  isModalOpenParam: boolean;
+  title?: string;
+}
+
 export interface ModalsContextInterface {
   isModalOpen: boolean;
   modalTitle: string;
@@ -26,7 +31,7 @@ export interface ModalsContextInterface {
   areNotificationsOpen: boolean;
   isDrawerOpen: boolean;
   isDeleteModalOpen: boolean;
-  handleModalOpening: (isModalOpenParam: boolean, title?: string) => void;
+  handleModalOpening: (props: ModalOpeningFunctionInterface) => void;
   handleBottomNavValueChange: (
     _e: SyntheticEvent,
     newBottomNavValue: BottomNavValue
@@ -43,7 +48,11 @@ export interface ToastContextInterface {
   showToast: boolean;
   message: string;
   severity: AlertColor;
-  handleToastOpening: (message: string, servity: AlertColor) => void;
+  handleToastOpening: (
+    message: string,
+    servity: AlertColor,
+    e?: unknown
+  ) => void;
   handleToastClosing: () => void;
 }
 

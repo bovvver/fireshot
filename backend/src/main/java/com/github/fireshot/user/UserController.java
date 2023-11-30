@@ -28,12 +28,12 @@ public class UserController {
     }
 
     @GetMapping(value = "/followers/{targetUserNickname}")
-    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowers(@PathVariable String targetUserNickname) {
+    public ResponseEntity<ResponseSetDTO<String>> getProfileFollowers(@PathVariable String targetUserNickname) {
         return userService.getProfileFollowers(targetUserNickname);
     }
 
     @GetMapping(value = "/following/{targetUserNickname}")
-    public ResponseEntity<ResponseSetDTO<User>> getProfileFollowing(@PathVariable String targetUserNickname) {
+    public ResponseEntity<ResponseSetDTO<String>> getProfileFollowing(@PathVariable String targetUserNickname) {
         return userService.getProfileFollowing(targetUserNickname);
     }
 
@@ -42,13 +42,28 @@ public class UserController {
         return userService.searchFromAllUsers(searchInput);
     }
 
+    @GetMapping(value = "/search/")
+    public ResponseEntity<ResponseSetDTO<String>> searchFromAllUsers() {
+        return userService.searchFromAllUsers("");
+    }
+
     @GetMapping(value = "/search/{targetUserNickname}/followers/{searchInput}")
     public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowers(@PathVariable String targetUserNickname, @PathVariable String searchInput) {
         return userService.searchFromUserFollowers(targetUserNickname, searchInput, true);
     }
 
+    @GetMapping(value = "/search/{targetUserNickname}/followers/")
+    public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowers(@PathVariable String targetUserNickname) {
+        return userService.searchFromUserFollowers(targetUserNickname, "", true);
+    }
+
     @GetMapping(value = "/search/{targetUserNickname}/following/{searchInput}")
     public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowing(@PathVariable String targetUserNickname, @PathVariable String searchInput) {
         return userService.searchFromUserFollowers(targetUserNickname, searchInput, false);
+    }
+
+    @GetMapping(value = "/search/{targetUserNickname}/following/")
+    public ResponseEntity<ResponseSetDTO<String>> searchFromUserFollowing(@PathVariable String targetUserNickname) {
+        return userService.searchFromUserFollowers(targetUserNickname, "", false);
     }
 }

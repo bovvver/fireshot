@@ -14,8 +14,12 @@ const BottomNavBar = () => {
   const { loggedUser } = useAuth();
   const navigate = useNavigate();
 
+  const modalProps = {
+    isModalOpenParam: true,
+  };
+
   const openModal = () => {
-    handleModalOpening(true);
+    handleModalOpening(modalProps);
   };
 
   return (

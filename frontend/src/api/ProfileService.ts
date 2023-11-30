@@ -6,8 +6,9 @@ import {
   UpdateProfileData,
 } from "@customTypes/componentProps";
 
-const { addPhotoPath, updateProfilePath, fetchProfilePath } = photoPaths;
-const { followPath, unfollowPath } = profilePaths;
+const { addPhotoPath, updateProfilePath } = photoPaths;
+const { followPath, unfollowPath, getFollowersPath, getFollowingPath, fetchProfilePath } =
+  profilePaths;
 const { defaultSearchPath } = searchPaths;
 
 export const executeAddPhoto = async ({
@@ -52,6 +53,18 @@ export const executeUnfollow = async (nickname: string) => {
   return await apiClient.post(`${unfollowPath}/${nickname}`);
 };
 
+export const executeFollowersFetch = async (
+  nickname: string
+): SearchResponse => {
+  return await apiClient.get(`${getFollowersPath}/${nickname}`);
+};
+
+export const executeFollowingFetch = async (
+  nickname: string
+): SearchResponse => {
+  return await apiClient.get(`${getFollowingPath}/${nickname}`);
+};
+
 export const executeAllUsersSearch = async (
   searchInput: string
 ): SearchResponse => {
@@ -59,8 +72,8 @@ export const executeAllUsersSearch = async (
 };
 
 export const executeUserFollowersSearch = async (
-  nickname: string,
-  searchInput: string
+  searchInput: string,
+  nickname?: string
 ): SearchResponse => {
   return await apiClient.get(
     `${defaultSearchPath}/${nickname}/followers/${searchInput}`
@@ -68,8 +81,8 @@ export const executeUserFollowersSearch = async (
 };
 
 export const executeUserFollowingSearch = async (
-  nickname: string,
-  searchInput: string
+  searchInput: string,
+  nickname?: string
 ): SearchResponse => {
   return await apiClient.get(
     `${defaultSearchPath}/${nickname}/following/${searchInput}`

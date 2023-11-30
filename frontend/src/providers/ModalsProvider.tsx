@@ -1,5 +1,9 @@
 import { SyntheticEvent, createContext, useState, ReactNode } from "react";
-import { ModalsContextInterface, BottomNavValue } from "@customTypes/providers";
+import {
+  ModalsContextInterface,
+  BottomNavValue,
+  ModalOpeningFunctionInterface,
+} from "@customTypes/providers";
 import { useLocation } from "react-router-dom";
 
 export const ModalsContext = createContext<ModalsContextInterface>({
@@ -36,12 +40,12 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
 
   const handleModalData = (data: string[]) => {
     setModalData(data);
-  }
+  };
 
-  const handleModalOpening = (
-    isModalOpenParam: boolean,
-    title: string = ""
-  ) => {
+  const handleModalOpening = ({
+    isModalOpenParam,
+    title = "",
+  }: ModalOpeningFunctionInterface) => {
     setModalTitle(title);
     setIsModalOpen(isModalOpenParam);
   };
@@ -49,7 +53,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
   const handleModalClose = () => {
     handleModalData([]);
     setBottomNavValue(location.pathname.slice(1) as BottomNavValue);
-    handleModalOpening(false);
+    setIsModalOpen(false);
   };
 
   // BOTTOM NAV
@@ -103,7 +107,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
         handleDrawerOpen,
         handleDeleteModalOpening,
         isDeleteModalOpen,
-        handleModalData
+        handleModalData,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { ProfileHeaderInterface } from "@customTypes/componentProps";
 import { BoxWrapper, StyledAvatar } from "./ProfileHeader.styles";
@@ -7,7 +7,7 @@ import ProfileHeaderForm from "../ProfileHeaderForm/ProfileHeaderForm";
 import { baseUrl } from "@env/environments";
 import { executeFollow, executeUnfollow } from "@api/ProfileService";
 import { useToast } from "@hooks/contextHooks";
-import { AxiosError } from "axios";
+import { photoPaths } from "@config/apiPaths";
 
 const ProfileHeader = ({
   profileData,
@@ -18,9 +18,14 @@ const ProfileHeader = ({
   const [editable, setEditable] = useState(false);
   const { handleToastOpening } = useToast();
 
+  const { avatarPath } = photoPaths;
   const { email, nickname, description, following, photos } = profileData!;
   const userFirstLetter = nickname[0].toUpperCase();
-  const avatarUrl = `${baseUrl}/avatar/${email}`;
+  const avatarUrl = `${baseUrl}${avatarPath}/${email}`;
+
+  useEffect(() => {
+    setIsFollowing(profileData?.followed || false);
+  }, [profileData]);
 
   const handleEditChange = () => {
     setEditable((prev) => !prev);
@@ -34,16 +39,14 @@ const ProfileHeader = ({
       if (isFollowing) {
         await executeFollow(profile);
         setIsFollowing(true);
-        setFollowers((prevState) => prevState+1);
+        setFollowers((prevState) => prevState + 1);
       } else {
         await executeUnfollow(profile);
         setIsFollowing(false);
-        setFollowers((prevState) => prevState-1);
+        setFollowers((prevState) => prevState - 1);
       }
     } catch (e) {
-      if (e instanceof AxiosError && e.response)
-        handleToastOpening(e.response.data.message, "warning");
-      else handleToastOpening("Follow failed. Please try again.", "warning");
+      handleToastOpening("Follow failed. Please try again.", "warning", e);
     }
   };
 
@@ -57,6 +60,7 @@ const ProfileHeader = ({
               posts={photos.length}
               followers={followers}
               following={following}
+              nickname={nickname}
             />
           </BoxWrapper>
           <Typography sx={{ fontWeight: "bold" }}>{nickname}</Typography>

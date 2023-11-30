@@ -12,6 +12,7 @@ import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/photo")
 public class PhotoController {
     private PhotoService photoService;
 
@@ -30,7 +31,7 @@ public class PhotoController {
         return photoService.updateProfile(username, profileUpdate);
     }
 
-    @GetMapping(value = "avatar/{username}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/avatar/{username}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getAvatar(@PathVariable String username) throws IOException {
         return photoService.getPhoto(username);
     }

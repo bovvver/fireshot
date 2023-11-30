@@ -8,9 +8,7 @@ import { authPaths } from "@config/apiPaths";
 
 const { loginPath, logoutPath, registrationPath, refreshPath } = authPaths;
 
-export const executeLogin = async (
-  data: LoginRequestData
-): AuthResponse => {
+export const executeLogin = async (data: LoginRequestData): AuthResponse => {
   return await apiClient.post(loginPath, data);
 };
 

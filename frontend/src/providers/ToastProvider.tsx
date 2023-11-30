@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useState } from "react";
 import { ToastContextInterface } from "@customTypes/providers";
 import { AlertColor } from "@mui/material";
+import { AxiosError } from "axios";
 
 export const ToastContext = createContext<ToastContextInterface>({
   showToast: false,
@@ -15,8 +16,15 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<AlertColor>("info");
 
-  const handleToastOpening = (message: string, servity: AlertColor) => {
-    setMessage(message);
+  const handleToastOpening = (
+    message: string,
+    servity: AlertColor,
+    e?: unknown
+  ) => {
+    if (e instanceof AxiosError && e.response)
+      setMessage(e.response.data.message);
+    else setMessage(message);
+
     setShowToast(true);
     setSeverity(servity);
   };

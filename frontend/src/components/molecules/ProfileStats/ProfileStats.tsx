@@ -1,18 +1,65 @@
 import { ProfileStatsWrapper } from "./ProfileStats.styles";
 import ProfileStat from "@components/atoms/ProfileStat/ProfileStat";
 import ProfileStatLink from "@components/atoms/ProfileStatLink/ProfileStatLink";
-import { ProfileStatsProps } from "@customTypes/componentProps";
+import {
+  ModalFunctionProps,
+  ProfileStatsProps,
+} from "@customTypes/componentProps";
 import { useModals } from "@hooks/contextHooks";
+import {
+  executeFollowersFetch,
+  executeFollowingFetch,
+} from "@api/ProfileService";
+import ModalProps from "./ModalProps";
+import { useToast } from "@hooks/contextHooks";
 
-const ProfileStats = ({ posts, followers, following }: ProfileStatsProps) => {
-  const { handleModalOpening } = useModals();
+const ProfileStats = ({
+  posts,
+  followers,
+  following,
+  nickname,
+}: ProfileStatsProps) => {
+  const { handleModalOpening, handleModalData } = useModals();
+  const { handleToastOpening } = useToast();
+
+  const followersProps = new ModalProps(
+    true,
+    "Followers"
+  );
+
+  const followingProps = new ModalProps(
+    true,
+    "Following"
+  );
+
+  const fetchModalInitialState = async (subject: ModalFunctionProps) => {
+    try {
+      let result: string[];
+
+      if (subject === "followers") {
+        result = await executeFollowersFetch(nickname).then(
+          (res) => res.data.body!
+        );
+      } else if (subject === "following") {
+        result = await executeFollowingFetch(nickname).then(
+          (res) => res.data.body!
+        );
+      } else result = [];
+
+      handleModalData(result);
+    } catch (e) {
+      handleToastOpening("Couldn't fetch users.", "warning", e);
+    }
+  };
 
   const openFollowersModal = () => {
-    handleModalOpening(true, "Followers");
+    fetchModalInitialState("followers");
+    handleModalOpening(followersProps);
   };
 
   const openFollowingModal = () => {
-    handleModalOpening(true, "Following");
+    fetchModalInitialState("following");
+    handleModalOpening(followingProps);
   };
 
   return (

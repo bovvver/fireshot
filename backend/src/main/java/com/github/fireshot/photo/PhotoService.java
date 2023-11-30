@@ -153,7 +153,10 @@ public class PhotoService {
     }
 
     public byte[] getPhoto(String username, String photo, String basePath) throws IOException {
-        String path = String.format("%s/%s/%s", basePath, username, photo);
+        User user = userService.findByEmailNullVariant(username);
+        if(user == null) user = userService.findByNickname(username);
+
+        String path = String.format("%s/%s/%s", basePath, user.getUsername(), photo);
         File file = new File(path);
         InputStream in = new FileInputStream(file);
 
