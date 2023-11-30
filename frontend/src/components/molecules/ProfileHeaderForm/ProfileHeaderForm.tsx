@@ -8,19 +8,23 @@ import {
 } from "./ProfileHeaderForm.styles";
 import UpdateProfileTextField from "@components/atoms/UpdateProfileTextField/UpdateProfileTextField";
 import AddImageButton from "@components/atoms/AddImageButton/AddImageButton";
-import ProfileStats from "../ProfileStats/ProfileStats";
 import {
   ProfileHeaderFormProps,
   UpdateProfileData,
 } from "@customTypes/componentProps";
 import { useForm } from "react-hook-form";
-import { useToast } from "@hooks/contextHooks";
+import { useToast, useAuth } from "@hooks/contextHooks";
 import { executeProfileUpdate } from "@api/ProfileService";
+import Cookies from "universal-cookie";
+import { useNavigate } from "react-router-dom";
+import { ROOT_PATH } from "@config/routes";
 
 const ProfileHeaderForm = ({ handleEditChange }: ProfileHeaderFormProps) => {
   const [avatar, setAvatar] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
   const { handleToastOpening } = useToast();
+  const { handleUserChange } = useAuth();
+  const navigate = useNavigate();
   const {
     handleSubmit,
     reset,
@@ -34,11 +38,28 @@ const ProfileHeaderForm = ({ handleEditChange }: ProfileHeaderFormProps) => {
     },
   });
 
+  const correctPath = ({ nickname, description }: UpdateProfileData) => {
+    if (nickname === "" && description === "") return;
+
+    if (nickname !== "") {
+      setNicknameCookie(nickname);
+      handleUserChange(nickname);
+    }
+
+    navigate(ROOT_PATH);
+  };
+
+  const setNicknameCookie = (nickname: string) => {
+    new Cookies().set("nickname", nickname, { path: ROOT_PATH });
+  };
+
   const onSubmit = async (data: UpdateProfileData) => {
     data.photo = selectedPhoto;
 
     try {
       await executeProfileUpdate(data);
+      correctPath(data);
+
       handleToastOpening("Profile updated.", "success");
       handleEditChange();
     } catch (e) {
@@ -61,7 +82,6 @@ const ProfileHeaderForm = ({ handleEditChange }: ProfileHeaderFormProps) => {
               setImage={setSelectedPhoto}
             />
           </StyledPaper>
-          <ProfileStats />
         </BoxWrapper>
 
         <UpdateProfileTextField

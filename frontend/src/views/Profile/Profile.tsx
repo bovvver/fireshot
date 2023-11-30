@@ -7,7 +7,6 @@ import { executeProfileFetching } from "@api/ProfileService";
 import { useToast } from "@hooks/contextHooks";
 import { useNavigate } from "react-router-dom";
 import { ROOT_PATH } from "@config/routes";
-import { AxiosError } from "axios";
 import { UserData } from "@customTypes/api";
 import ProfileLoading from "@components/molecules/ProfileLoading/ProfileLoading";
 import { baseUrl } from "@env/environments";
@@ -28,19 +27,22 @@ const Profile = () => {
         setLoading(false);
       } catch (e) {
         navigate(ROOT_PATH);
-        if (e instanceof AxiosError) handleToastOpening(e.message, "info");
+        handleToastOpening("Couldn't fetch profile data.", "info", e);
       }
     };
 
     fetchProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nickname]);
 
   return (
     <>
       {!loading ? (
         <Container maxWidth="md">
-          <ProfileHeader profileData={profileData} loggedUserAccount={loggedUser === nickname} />
+          <ProfileHeader
+            profileData={profileData}
+            loggedUserAccount={loggedUser === nickname}
+          />
           <Box>
             <ImageList sx={{ width: "100%" }} cols={3}>
               {profileData!.photos.map((item) => (
@@ -49,8 +51,8 @@ const Profile = () => {
                   sx={{ width: "100%", aspectRatio: "1/1" }}
                 >
                   <img
-                    srcSet={`${baseUrl}/${item}?fit=crop&auto=format&dpr=2 2x`}
-                    src={`${baseUrl}/${item}?fit=crop&auto=format`}
+                    srcSet={`${baseUrl}/photo/${item}?fit=crop&auto=format&dpr=2 2x`}
+                    src={`${baseUrl}/photo/${item}?fit=crop&auto=format`}
                     loading="lazy"
                   />
                 </ImageListItem>

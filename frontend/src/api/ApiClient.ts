@@ -13,4 +13,5 @@ import { baseUrl } from "@env/environments";
  */
 export const apiClient = axios.create({
   baseURL: baseUrl,
+  withCredentials: true,
 });

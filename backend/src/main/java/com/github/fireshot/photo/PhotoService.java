@@ -1,8 +1,10 @@
 package com.github.fireshot.photo;
 
 import com.github.fireshot.dto.PhotoRequestDTO;
+import com.github.fireshot.dto.ProfileUpdateDTO;
 import com.github.fireshot.dto.ResponseDTO;
 import com.github.fireshot.exceptions.PhotoUploadException;
+import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import com.github.fireshot.user.User;
 import com.github.fireshot.user.UserService;
 import org.apache.commons.io.IOUtils;
@@ -16,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -36,23 +41,45 @@ public class PhotoService {
         this.AVATAR_NAME = AVATAR_NAME;
     }
 
-    public ResponseEntity<ResponseDTO<Object>> uploadPhoto(String username, PhotoRequestDTO photoRequest, String path) {
+    public void uploadPhoto(String username, PhotoRequestDTO photoRequest, String path) {
         MultipartFile photoFile = photoRequest.file();
         if (photoFile == null || photoFile.getOriginalFilename() == null)
             throw new PhotoUploadException("Correct photo is not provided.");
 
         saveImage(photoRequest, username, path);
+    }
 
+    public void uploadPhoto(String username, ProfileUpdateDTO profileUpdate, String path) {
+        PhotoRequestDTO photoRequest = new PhotoRequestDTO(profileUpdate.file(), "", "");
+        uploadPhoto(username, photoRequest, path);
+    }
+
+    public ResponseEntity<ResponseDTO<Object>> addPhoto(String username, PhotoRequestDTO photoRequest) {
+        uploadPhoto(username, photoRequest, UPLOAD_PATH);
         ResponseDTO<Object> response = new ResponseDTO<>(HttpStatus.OK.value(), "Photo added.");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<ResponseDTO<Object>> addPhoto(String username, PhotoRequestDTO photoRequest) {
-        return uploadPhoto(username, photoRequest, UPLOAD_PATH);
-    }
+    public ResponseEntity<ResponseDTO<Object>> updateProfile(String username, ProfileUpdateDTO profileUpdate) {
+        User user = (User) userService.loadUserByUsername(username);
 
-    public ResponseEntity<ResponseDTO<Object>> addAvatar(String username, PhotoRequestDTO photoRequest) {
-        return uploadPhoto(username, photoRequest, AVATAR_PATH);
+        String description = profileUpdate.description();
+        String nickname = profileUpdate.nickname();
+
+        if (profileUpdate.file() != null)
+            uploadPhoto(username, profileUpdate, AVATAR_PATH);
+        if (!description.equals(""))
+            user.setDescription(description);
+        if (!nickname.equals("")) {
+            if (userService.checkNicknameAvailability(nickname) != null)
+                throw new UserAlreadyExistsException("This username is already taken.");
+            user.setNickname(nickname);
+        }
+
+        userService.saveUser(user);
+
+        ResponseDTO<Object> response = new ResponseDTO<>(HttpStatus.OK.value(), "Profile updated.");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private void saveImage(PhotoRequestDTO request, String username, String path) {
@@ -126,7 +153,10 @@ public class PhotoService {
     }
 
     public byte[] getPhoto(String username, String photo, String basePath) throws IOException {
-        String path = String.format("%s/%s/%s", basePath, username, photo);
+        User user = userService.findByEmailNullVariant(username);
+        if(user == null) user = userService.findByNickname(username);
+
+        String path = String.format("%s/%s/%s", basePath, user.getUsername(), photo);
         File file = new File(path);
         InputStream in = new FileInputStream(file);
 

@@ -1,12 +1,15 @@
 import { apiClient } from "./ApiClient";
-import { photoPaths } from "@config/apiPaths";
-import { ProfileResponse } from "@customTypes/api";
+import { photoPaths, profilePaths, searchPaths } from "@config/apiPaths";
+import { ProfileResponse, SearchResponse } from "@customTypes/api";
 import {
   AddPhotoFieldValues,
   UpdateProfileData,
 } from "@customTypes/componentProps";
 
-const { addPhotoPath, updateProfilePath, fetchProfilePath } = photoPaths;
+const { addPhotoPath, updateProfilePath } = photoPaths;
+const { followPath, unfollowPath, getFollowersPath, getFollowingPath, fetchProfilePath } =
+  profilePaths;
+const { defaultSearchPath } = searchPaths;
 
 export const executeAddPhoto = async ({
   photo,
@@ -18,9 +21,7 @@ export const executeAddPhoto = async ({
   formData.append("description", description);
   formData.append("location", location);
 
-  return await apiClient.post(addPhotoPath, formData, {
-    withCredentials: true,
-  });
+  return await apiClient.post(addPhotoPath, formData);
 };
 
 export const executeProfileUpdate = async ({
@@ -33,13 +34,57 @@ export const executeProfileUpdate = async ({
   formData.append("nickname", nickname);
   formData.append("description", description);
 
-  return await apiClient.post(updateProfilePath, formData, {
-    withCredentials: true,
-  });
+  return await apiClient.post(updateProfilePath, formData);
 };
 
-export const executeProfileFetching = async (nickname: string): ProfileResponse => {
-  return await apiClient.get(`${fetchProfilePath}/${nickname}`, {
-    withCredentials: true,
-  }).then(res => res.data);
+export const executeProfileFetching = async (
+  nickname: string
+): ProfileResponse => {
+  return await apiClient
+    .get(`${fetchProfilePath}/${nickname}`)
+    .then((res) => res.data);
+};
+
+export const executeFollow = async (nickname: string) => {
+  return await apiClient.post(`${followPath}/${nickname}`);
+};
+
+export const executeUnfollow = async (nickname: string) => {
+  return await apiClient.post(`${unfollowPath}/${nickname}`);
+};
+
+export const executeFollowersFetch = async (
+  nickname: string
+): SearchResponse => {
+  return await apiClient.get(`${getFollowersPath}/${nickname}`);
+};
+
+export const executeFollowingFetch = async (
+  nickname: string
+): SearchResponse => {
+  return await apiClient.get(`${getFollowingPath}/${nickname}`);
+};
+
+export const executeAllUsersSearch = async (
+  searchInput: string
+): SearchResponse => {
+  return await apiClient.get(`${defaultSearchPath}/${searchInput}`);
+};
+
+export const executeUserFollowersSearch = async (
+  searchInput: string,
+  nickname?: string
+): SearchResponse => {
+  return await apiClient.get(
+    `${defaultSearchPath}/${nickname}/followers/${searchInput}`
+  );
+};
+
+export const executeUserFollowingSearch = async (
+  searchInput: string,
+  nickname?: string
+): SearchResponse => {
+  return await apiClient.get(
+    `${defaultSearchPath}/${nickname}/following/${searchInput}`
+  );
 };

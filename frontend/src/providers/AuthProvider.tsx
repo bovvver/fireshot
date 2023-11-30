@@ -10,7 +10,6 @@ import {
 } from "@api/AuthService";
 import { ROOT_PATH, LOGIN_PATH } from "@config/routes";
 import { useToast } from "@hooks/contextHooks";
-import { AxiosError } from "axios";
 import Cookies from "universal-cookie";
 import { userCookie } from "@env/environments";
 
@@ -18,6 +17,7 @@ export const AuthContext = createContext<AuthContextInterface>({
   isLoginFormSelected: true,
   isAuthenticated: false,
   loggedUser: "",
+  handleUserChange: () => {},
   handleFormSelection: () => {},
   handleAuthentication: () => {},
   handleLogin: () => {},
@@ -60,9 +60,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       handleFormSelection(true);
       handleToastOpening(response.data.message, "success");
     } catch (e) {
-      if (e instanceof AxiosError && e.response)
-        handleToastOpening(e.response.data.message, "error");
-      else handleToastOpening("Registration error.", "error");
+      handleToastOpening("Registration error.", "error", e);
     }
   };
 
@@ -91,7 +89,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const authenticate = () => {
     const cookies = new Cookies();
     setIsAuthenticated(true);
-    setLoggedUser(cookies.get(userCookie));
+    handleUserChange(cookies.get(userCookie));
 
     if (location.pathname === LOGIN_PATH) {
       navigate(ROOT_PATH);
@@ -100,12 +98,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleUserChange = (newUser: string) => {
+    setLoggedUser(newUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         isLoginFormSelected,
         handleFormSelection,
         loggedUser,
+        handleUserChange,
         isAuthenticated,
         handleAuthentication,
         handleLogin,

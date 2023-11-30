@@ -7,6 +7,7 @@ export interface AuthContextInterface {
   handleFormSelection: (isLoginForm: boolean) => void;
   isAuthenticated: boolean;
   loggedUser: string;
+  handleUserChange: (newUser: string) => void;
   handleAuthentication: (isAuthenticatedParam: boolean) => void;
   handleLogin: (data: LoginRequestData) => void;
   handleRegistration: (data: RegistrationRequestData) => void;
@@ -17,14 +18,20 @@ export interface AuthContextInterface {
 
 export type BottomNavValue = "" | "search" | "add" | "profile";
 
+export interface ModalOpeningFunctionInterface {
+  isModalOpenParam: boolean;
+  title?: string;
+}
+
 export interface ModalsContextInterface {
   isModalOpen: boolean;
-  bottomNavValue: BottomNavValue;
   modalTitle: string;
+  modalData: string[];
+  bottomNavValue: BottomNavValue;
   areNotificationsOpen: boolean;
   isDrawerOpen: boolean;
   isDeleteModalOpen: boolean;
-  handleModalOpening: (isModalOpenParam: boolean, title?: string) => void;
+  handleModalOpening: (props: ModalOpeningFunctionInterface) => void;
   handleBottomNavValueChange: (
     _e: SyntheticEvent,
     newBottomNavValue: BottomNavValue
@@ -34,13 +41,18 @@ export interface ModalsContextInterface {
   handleNotificationOpen: (newNotificationsState: boolean) => void;
   handleDrawerOpen: (newDrawerState: boolean) => void;
   handleDeleteModalOpening: (newDeleteModalState: boolean) => void;
+  handleModalData: (data: string[]) => void;
 }
 
 export interface ToastContextInterface {
   showToast: boolean;
   message: string;
   severity: AlertColor;
-  handleToastOpening: (message: string, servity: AlertColor) => void;
+  handleToastOpening: (
+    message: string,
+    servity: AlertColor,
+    e?: unknown
+  ) => void;
   handleToastClosing: () => void;
 }
 
