@@ -1,16 +1,15 @@
 package com.github.fireshot.photo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.github.fireshot.comment.Comment;
 import com.github.fireshot.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,15 +20,15 @@ public class Photo {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
-    @JsonIgnore
     private int id;
     private String source;
     private String description;
     private String location;
-    private List<String> comments;
+    @OneToMany(mappedBy = "photo", orphanRemoval = true)
+    private List<Comment> comments;
     private int likes;
+    private Date date;
     @ManyToOne
-    @JsonIgnore
     private User owner;
 
     public Photo(String source, String description, String location, User owner) {
@@ -39,5 +38,11 @@ public class Photo {
         this.comments = new LinkedList<>();
         this.likes = 0;
         this.owner = owner;
+        this.date = new Date();
+    }
+
+    @JsonGetter("owner")
+    public String getFollowersLength() {
+        return this.owner.getNickname();
     }
 }

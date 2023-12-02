@@ -8,7 +8,7 @@ export const authPaths = {
 export const photoPaths = {
   addPhotoPath: "/photo/upload",
   updateProfilePath: "/photo/update",
-  avatarPath: "/photo/avatar"
+  avatarPath: "/photo/avatar",
 };
 
 export const profilePaths = {
@@ -16,9 +16,17 @@ export const profilePaths = {
   followPath: "/user/follow",
   unfollowPath: "/user/unfollow",
   getFollowersPath: "/user/followers",
-  getFollowingPath: "/user/following"
+  getFollowingPath: "/user/following",
 };
 
 export const searchPaths = {
-  defaultSearchPath: "/user/search"
-}
+  defaultSearchPath: "/user/search",
+};
+
+export const homePagePaths = {
+  displayPagePath: "/photo/home/page",
+};
+
+export const commentPaths = {
+  addComment: "/comment/add",
+};

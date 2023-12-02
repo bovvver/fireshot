@@ -3,6 +3,8 @@ package com.github.fireshot.photo;
 import com.github.fireshot.dto.PhotoRequestDTO;
 import com.github.fireshot.dto.ProfileUpdateDTO;
 import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.ResponsePageDTO;
+import com.github.fireshot.exceptions.PhotoNotFoundException;
 import com.github.fireshot.exceptions.PhotoUploadException;
 import com.github.fireshot.exceptions.UserAlreadyExistsException;
 import com.github.fireshot.user.User;
@@ -10,6 +12,9 @@ import com.github.fireshot.user.UserService;
 import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -39,6 +44,10 @@ public class PhotoService {
         this.UPLOAD_PATH = UPLOAD_PATH;
         this.AVATAR_PATH = AVATAR_PATH;
         this.AVATAR_NAME = AVATAR_NAME;
+    }
+
+    public Photo findById(int id) {
+        return photoRepository.findById(id).orElseThrow(() -> new PhotoNotFoundException("Photo not found."));
     }
 
     public void uploadPhoto(String username, PhotoRequestDTO photoRequest, String path) {
@@ -169,5 +178,15 @@ public class PhotoService {
 
     public byte[] getPhoto(String username) throws IOException {
         return getPhoto(username, AVATAR_NAME, AVATAR_PATH);
+    }
+
+    public ResponseEntity<ResponsePageDTO<Photo>> getPageOfPosts(int page, String username) {
+        Pageable requestedPage = PageRequest.of(page - 1, 5);
+        int userId = userService.findByEmail(username).getId();
+
+        Page<Photo> resultPage = photoRepository.getPhotosForFollowedUsers(userId, requestedPage);
+        ResponsePageDTO<Photo> response = new ResponsePageDTO<>(200, "Page fetched", resultPage);
+
+        return ResponseEntity.ok(response);
     }
 }

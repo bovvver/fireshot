@@ -3,6 +3,7 @@ package com.github.fireshot.photo;
 import com.github.fireshot.dto.PhotoRequestDTO;
 import com.github.fireshot.dto.ProfileUpdateDTO;
 import com.github.fireshot.dto.ResponseDTO;
+import com.github.fireshot.dto.ResponsePageDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,10 @@ public class PhotoController {
     @GetMapping(value = "/avatar/{username}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getAvatar(@PathVariable String username) throws IOException {
         return photoService.getPhoto(username);
+    }
+
+    @GetMapping(value = "/home/page/{page}")
+    public ResponseEntity<ResponsePageDTO<Photo>> getPageOfPosts(@PathVariable int page, @CookieValue(name="logged-user") String username) {
+        return photoService.getPageOfPosts(page, username);
     }
 }

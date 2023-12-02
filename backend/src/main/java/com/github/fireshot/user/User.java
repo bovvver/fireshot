@@ -3,6 +3,7 @@ package com.github.fireshot.user;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.fireshot.comment.Comment;
 import com.github.fireshot.enums.Role;
 import com.github.fireshot.photo.Photo;
 import jakarta.persistence.*;
@@ -72,6 +73,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Role role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
+    private List<Comment> comments;
 
     @JsonIgnore
     private boolean expired;

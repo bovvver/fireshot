@@ -1,18 +1,32 @@
 import PostPhoto from "@components/molecules/PostPhoto/PostPhoto";
 import UnderPhotoSection from "@components/molecules/UnderPhotoSection/UnderPhotoSection";
-import { AvatarUserField } from "@customTypes/componentProps";
+import { HomePostProps } from "@customTypes/componentProps";
 import { PostWrapper } from "./HomePost.styles";
 import PostUserData from "@components/molecules/PostUserData/PostUserData";
+import { useNavigate } from "react-router-dom";
+import { PROFILE_PATH } from "@config/routes";
+import { baseUrl } from "@env/environments";
+import { photoPaths } from "@config/apiPaths";
 
-const HomePost = ({ username, src = "", location = "" }: AvatarUserField) => {
+const HomePost = ({ post }: HomePostProps) => {
+  const navigate = useNavigate();
+  const { source, description, location, owner } = post;
+  const { avatarPath } = photoPaths;
+
+  const navigateToProfile = () => {
+    navigate(PROFILE_PATH + owner);
+  };
+
   return (
     <PostWrapper elevation={1}>
-      <PostUserData username={username} src={src} location={location} />
-      <PostPhoto
-        src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg"
-        alt="sample"
+      <PostUserData
+        onClick={navigateToProfile}
+        username={owner}
+        src={`${baseUrl}${avatarPath}/${owner}`}
+        location={location}
       />
-      <UnderPhotoSection />
+      <PostPhoto src={`${baseUrl}/photo/${source}`} alt={description} />
+      <UnderPhotoSection post={post} />
     </PostWrapper>
   );
 };

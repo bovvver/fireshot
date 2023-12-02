@@ -1,4 +1,5 @@
 import { AxiosHeaders } from "axios";
+import { Comment } from "./componentProps";
 
 // == AXIOS ==
 
@@ -47,3 +48,37 @@ export interface UserData {
 export type ProfileResponse = Promise<ResponseDTO<UserData>>;
 
 export type SearchResponse = Promise<ApiResponseData<ResponseDTO<string[]>>>;
+
+export interface Photo {
+  id: number;
+  source: string;
+  description: string;
+  location: string;
+  comments: Comment[];
+  likes: number;
+  date: string;
+  owner: string;
+}
+
+export interface PhotoPage {
+  content: Photo[];
+  pageable: Record<string, unknown>;
+  totalPages: number;
+  totalElements: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: Record<string, unknown>;
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+}
+
+export type PhotoPageResponse = Promise<
+  ApiResponseData<ResponseDTO<PhotoPage>>
+>;
+
+export interface CommentDTO {
+  photoId: number;
+  content: string;
+}
