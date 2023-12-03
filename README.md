@@ -3,7 +3,7 @@
 <a  href="https://github.com/MemeeMaster/fireshot">
 <img  src="https://github.com/MemeeMaster/fireshot/assets/85307370/74ae8f68-23e3-4cf4-b003-8b4d4b846e5a"  alt="Logo"  width="80"  height="80">
 </a>
-<h2>Fireshot 🔥</h2>
+<h2>Fireshot 1.0. 🔥</h2>
 <p>
 Full-stack <strong>educational</strong> project imitating <strong>Instagram.</strong></p><br/></div>
 
@@ -80,5 +80,5 @@ If you have made it this far, thank you for your interest! I have put a lot of t
 
 I would like to thank the entire development community who helped me when I encountered problems through [stackoverflow](https://stackoverflow.com/), among others.
 
-That's all from me. See you again soon! :wave:
+That's all from me. See you again soon! :wave:<br/>
 **Keep coding! 🚀**
