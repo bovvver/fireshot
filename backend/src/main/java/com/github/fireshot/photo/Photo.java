@@ -1,18 +1,15 @@
 package com.github.fireshot.photo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.github.fireshot.comment.Comment;
 import com.github.fireshot.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -21,23 +18,45 @@ public class Photo {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue
-    @JsonIgnore
     private int id;
     private String source;
     private String description;
     private String location;
-    private List<String> comments;
-    private int likes;
+    @OneToMany(mappedBy = "photo", orphanRemoval = true)
+    private List<Comment> comments;
+    @ManyToMany(mappedBy = "likedPhotos", cascade = CascadeType.ALL)
+    private Set<User> likes;
+    private Date date;
     @ManyToOne
-    @JsonIgnore
     private User owner;
+    private boolean liked;
 
     public Photo(String source, String description, String location, User owner) {
         this.source = source;
         this.description = description;
         this.location = location;
         this.comments = new LinkedList<>();
-        this.likes = 0;
+        this.likes = new HashSet<>();
         this.owner = owner;
+        this.date = new Date();
+        this.liked = false;
+    }
+
+    @JsonGetter("owner")
+    public String getFollowersLength() {
+        return this.owner.getNickname();
+    }
+
+    @JsonGetter("likes")
+    public int getLikes() {
+        return this.likes.size();
+    }
+
+    public Set<User> getLikesSet() {
+        return this.likes;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 }

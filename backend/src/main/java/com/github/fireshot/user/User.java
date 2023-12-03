@@ -3,6 +3,7 @@ package com.github.fireshot.user;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.fireshot.comment.Comment;
 import com.github.fireshot.enums.Role;
 import com.github.fireshot.photo.Photo;
 import jakarta.persistence.*;
@@ -74,6 +75,10 @@ public class User implements UserDetails {
     private Role role;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
+    private List<Comment> comments;
+
+    @JsonIgnore
     private boolean expired;
 
     @JsonIgnore
@@ -85,6 +90,14 @@ public class User implements UserDetails {
     @Transient
     @JsonIgnore
     private int passwordExp = 30;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_likes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "photo_id"))
+    @JsonIgnore
+    private Set<Photo> likedPhotos;
 
     // TODO: private List<Notification> notifications;
 
@@ -112,6 +125,7 @@ public class User implements UserDetails {
         this.expired = expired;
         this.locked = locked;
         this.enabled = enabled;
+        this.likedPhotos = new HashSet<>();
     }
 
     /**

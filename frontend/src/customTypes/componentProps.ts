@@ -1,5 +1,5 @@
 import { Control, FieldErrors, FieldValues } from "react-hook-form";
-import { SearchResponse, UserData } from "./api";
+import { Photo, SearchResponse, UserData } from "./api";
 
 export interface CustomTextFieldValues {
   email: string;
@@ -41,10 +41,15 @@ export interface AddPhotoTextFieldProps<T extends FieldValues> {
 }
 
 export interface AvatarUserField {
-  onClick: () => void;
   username: string;
   src?: string;
   location?: string;
+  onClick?: () => void;
+}
+
+export interface HomePostProps {
+  post: Photo;
+  ref?: unknown;
 }
 
 export interface ProfileStatInterface {
@@ -90,3 +95,20 @@ export type SearchFunction = (
 ) => SearchResponse;
 
 export type ModalFunctionProps = "followers" | "following";
+
+export interface UnderPhotoProps {
+  id: number;
+  owner: string;
+  likes: number;
+  description: string;
+  date: string;
+}
+
+export interface UnderPhotoSectionProps {
+  post: Photo;
+}
+
+export interface Comment {
+  author: string;
+  content: string;
+}

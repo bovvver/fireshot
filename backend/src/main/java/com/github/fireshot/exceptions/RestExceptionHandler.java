@@ -64,6 +64,11 @@ public class RestExceptionHandler {
         return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler(value = PhotoNotFoundException.class)
+    public ResponseEntity<ResponseDTO<Object>> handlePhotoNotFoundException(PhotoNotFoundException exception) {
+        return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
     @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ResponseDTO<Object>> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception) {
         return finishExceptionHandling(HttpStatus.NOT_FOUND, exception.getMessage());
