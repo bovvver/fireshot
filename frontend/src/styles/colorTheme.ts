@@ -4,7 +4,7 @@ const colors = {
   selectGray: "#2d2d2d",
   bgGray: "#121212",
   red: "#C20114",
-  white: "#e8e6e3"
+  white: "#fff"
 };
 
 export default colors;

@@ -25,6 +25,7 @@ const ProfileHeader = ({
 
   useEffect(() => {
     setIsFollowing(profileData?.followed || false);
+    setFollowers(profileData!.followers)
   }, [profileData]);
 
   const handleEditChange = () => {

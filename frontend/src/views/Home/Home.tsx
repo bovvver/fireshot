@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef, Fragment } from "react";
 import HomePost from "@components/organisms/HomePost/HomePost";
-import { HomeContainer } from "./Home.styles";
+import { HomeContainer, PostSkeleton } from "./Home.styles";
 import { executeHomePagePagination } from "@api/HomePageService";
 import { Photo } from "@customTypes/api";
 import NoPostsPage from "@components/molecules/NoPostsPage/NoPostsPage";
+import { useToast } from "@hooks/contextHooks";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [allPosts, setAllPosts] = useState<Photo[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [lastElementIndex, setLastElementIndex] = useState<number | null>(null);
+  const { handleToastOpening } = useToast();
   const TOTAL_PAGES = 15;
 
   const observer = useRef(
@@ -22,12 +24,16 @@ const Home = () => {
   );
 
   const callApi = async () => {
-    setLoading(true);
-    const response = await executeHomePagePagination(pageNum);
-    const responseContent = response.data.body!.content;
-    const all = new Set([...allPosts, ...responseContent]);
-    setAllPosts([...all]);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const response = await executeHomePagePagination(pageNum);
+      const responseContent = response.data.body!.content;
+      const all = new Set([...allPosts, ...responseContent]);
+      setAllPosts([...all]);
+      setLoading(false);
+    } catch (e) {
+      handleToastOpening("Couldn't fetch posts.", "warning");
+    }
   };
 
   useEffect(() => {
@@ -85,7 +91,8 @@ const Home = () => {
             </Fragment>
           );
         })}
-      {allPosts.length === 0 ? <NoPostsPage /> : null}
+      {allPosts.length === 0 && !loading ? <NoPostsPage /> : null}
+      {loading ? <PostSkeleton /> : null}
     </HomeContainer>
   );
 };
