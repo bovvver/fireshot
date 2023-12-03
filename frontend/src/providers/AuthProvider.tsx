@@ -79,10 +79,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await executeLogout();
       setIsAuthenticated(false);
-      navigate(ROOT_PATH);
+      navigate(LOGIN_PATH);
       handleToastOpening(response.data.message, "info");
     } catch (e) {
-      handleToastOpening("Couldn't logout. Please try again.", "warning");
+      handleToastOpening("Couldn't logout. Please try again.", "warning", e);
     }
   };
 

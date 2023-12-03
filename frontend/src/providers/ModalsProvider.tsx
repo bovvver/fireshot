@@ -5,6 +5,7 @@ import {
   ModalOpeningFunctionInterface,
 } from "@customTypes/providers";
 import { useLocation } from "react-router-dom";
+import { Comment } from "@customTypes/componentProps";
 
 export const ModalsContext = createContext<ModalsContextInterface>({
   isModalOpen: false,
@@ -14,6 +15,7 @@ export const ModalsContext = createContext<ModalsContextInterface>({
   areNotificationsOpen: false,
   isDrawerOpen: false,
   isDeleteModalOpen: false,
+  drawerData: [],
   handleModalOpening: () => {},
   handleBottomNavValueChange: () => {},
   handleBottomNavValueClick: () => {},
@@ -31,6 +33,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
   const [modalData, setModalData] = useState<string[]>([]);
   const [areNotificationsOpen, setAreNotificationsOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerData, setDrawerData] = useState<Comment[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bottomNavValue, setBottomNavValue] = useState<BottomNavValue>(
     location.pathname.slice(1) as BottomNavValue
@@ -81,8 +84,9 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
 
   // COMMENT DRAWER
 
-  const handleDrawerOpen = (newDrawerState: boolean) => {
+  const handleDrawerOpen = (newDrawerState: boolean, data?: Comment[]) => {
     setIsDrawerOpen(newDrawerState);
+    setDrawerData(data || []);
   };
 
   // DELETE PHOTO MODAL
@@ -108,6 +112,7 @@ const ModalsProvider = ({ children }: { children: ReactNode }) => {
         handleDeleteModalOpening,
         isDeleteModalOpen,
         handleModalData,
+        drawerData,
       }}
     >
       {children}

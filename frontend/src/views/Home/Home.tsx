@@ -3,13 +3,14 @@ import HomePost from "@components/organisms/HomePost/HomePost";
 import { HomeContainer } from "./Home.styles";
 import { executeHomePagePagination } from "@api/HomePageService";
 import { Photo } from "@customTypes/api";
+import NoPostsPage from "@components/molecules/NoPostsPage/NoPostsPage";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [allPosts, setAllPosts] = useState<Photo[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [lastElementIndex, setLastElementIndex] = useState<number | null>(null);
-  const TOTAL_PAGES = 10;
+  const TOTAL_PAGES = 15;
 
   const observer = useRef(
     new IntersectionObserver((entries) => {
@@ -84,6 +85,7 @@ const Home = () => {
             </Fragment>
           );
         })}
+      {allPosts.length === 0 ? <NoPostsPage /> : null}
     </HomeContainer>
   );
 };

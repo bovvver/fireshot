@@ -1,9 +1,6 @@
 package com.github.fireshot.photo;
 
-import com.github.fireshot.dto.PhotoRequestDTO;
-import com.github.fireshot.dto.ProfileUpdateDTO;
-import com.github.fireshot.dto.ResponseDTO;
-import com.github.fireshot.dto.ResponsePageDTO;
+import com.github.fireshot.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +37,10 @@ public class PhotoController {
     @GetMapping(value = "/home/page/{page}")
     public ResponseEntity<ResponsePageDTO<Photo>> getPageOfPosts(@PathVariable int page, @CookieValue(name="logged-user") String username) {
         return photoService.getPageOfPosts(page, username);
+    }
+
+    @PostMapping(value = "/likeToggle")
+    public ResponseEntity<ResponseDTO<Object>> togglePhotoLike(@RequestBody LikeDTO likeDTO, @CookieValue(name="logged-user") String username) {
+        return photoService.togglePhotoLike(likeDTO.photoId(), username, likeDTO.isLiking());
     }
 }

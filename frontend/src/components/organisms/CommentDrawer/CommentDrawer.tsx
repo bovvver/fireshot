@@ -1,9 +1,9 @@
-import Comment from "@components/molecules/Comment/Comment";
+import CommentBlock from "@components/molecules/CommentBlock/CommentBlock";
 import { useModals } from "@hooks/contextHooks";
 import { Box, Drawer } from "@mui/material";
 
 const CommentDrawer = ({ open }: { open: boolean }) => {
-  const { handleDrawerOpen } = useModals();
+  const { handleDrawerOpen, drawerData } = useModals();
 
   const openDrawer = () => {
     handleDrawerOpen(false);
@@ -12,12 +12,9 @@ const CommentDrawer = ({ open }: { open: boolean }) => {
   return (
     <Drawer open={open} anchor="bottom" onClose={openDrawer}>
       <Box sx={{ pt: 1 }}>
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
+        {drawerData.map((el, i) => (
+          <CommentBlock key={i} author={el.author} content={el.content}/>
+        ))}
       </Box>
     </Drawer>
   );

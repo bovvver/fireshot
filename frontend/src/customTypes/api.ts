@@ -58,6 +58,7 @@ export interface Photo {
   likes: number;
   date: string;
   owner: string;
+  liked: boolean;
 }
 
 export interface PhotoPage {
@@ -81,4 +82,9 @@ export type PhotoPageResponse = Promise<
 export interface CommentDTO {
   photoId: number;
   content: string;
+}
+
+export interface LikeDTO {
+  photoId: number;
+  isLiking: boolean;
 }

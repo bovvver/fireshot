@@ -163,7 +163,7 @@ public class PhotoService {
 
     public byte[] getPhoto(String username, String photo, String basePath) throws IOException {
         User user = userService.findByEmailNullVariant(username);
-        if(user == null) user = userService.findByNickname(username);
+        if (user == null) user = userService.findByNickname(username);
 
         String path = String.format("%s/%s/%s", basePath, user.getUsername(), photo);
         File file = new File(path);
@@ -182,11 +182,48 @@ public class PhotoService {
 
     public ResponseEntity<ResponsePageDTO<Photo>> getPageOfPosts(int page, String username) {
         Pageable requestedPage = PageRequest.of(page - 1, 5);
-        int userId = userService.findByEmail(username).getId();
+        User user = userService.findByEmail(username);
 
-        Page<Photo> resultPage = photoRepository.getPhotosForFollowedUsers(userId, requestedPage);
+        Page<Photo> resultPage = photoRepository.getPhotosForFollowedUsers(user.getId(), requestedPage).map(el -> {
+            if (el.getLikesSet().contains(user)) el.setLiked(true);
+            return el;
+        });
+
         ResponsePageDTO<Photo> response = new ResponsePageDTO<>(200, "Page fetched", resultPage);
 
         return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<ResponseDTO<Object>> togglePhotoLike(int photoId, String username, boolean isLiking) {
+        Photo targetPhoto = findById(photoId);
+        User user = userService.findByEmail(username);
+        boolean photoContainsUser = targetPhoto.getLikesSet().contains(user);
+
+        if (isLiking) {
+            if (!photoContainsUser)
+                throw new UserAlreadyExistsException(username + " isn't liking this photo.");
+
+            removeLike(targetPhoto, user);
+        } else {
+            if (photoContainsUser)
+                throw new UserAlreadyExistsException(username + " is already liking this photo.");
+
+            addLike(targetPhoto, user);
+        }
+
+        userService.saveUser(user);
+        photoRepository.save(targetPhoto);
+
+        return ResponseEntity.ok(new ResponseDTO<>(200, isLiking ? "Photo disliked." : "Photo liked."));
+    }
+
+    public void addLike(Photo photo, User user) {
+        photo.getLikesSet().add(user);
+        user.getLikedPhotos().add(photo);
+    }
+
+    public void removeLike(Photo photo, User user) {
+        photo.getLikesSet().remove(user);
+        user.getLikedPhotos().remove(photo);
     }
 }

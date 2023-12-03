@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -26,23 +24,39 @@ public class Photo {
     private String location;
     @OneToMany(mappedBy = "photo", orphanRemoval = true)
     private List<Comment> comments;
-    private int likes;
+    @ManyToMany(mappedBy = "likedPhotos", cascade = CascadeType.ALL)
+    private Set<User> likes;
     private Date date;
     @ManyToOne
     private User owner;
+    private boolean liked;
 
     public Photo(String source, String description, String location, User owner) {
         this.source = source;
         this.description = description;
         this.location = location;
         this.comments = new LinkedList<>();
-        this.likes = 0;
+        this.likes = new HashSet<>();
         this.owner = owner;
         this.date = new Date();
+        this.liked = false;
     }
 
     @JsonGetter("owner")
     public String getFollowersLength() {
         return this.owner.getNickname();
+    }
+
+    @JsonGetter("likes")
+    public int getLikes() {
+        return this.likes.size();
+    }
+
+    public Set<User> getLikesSet() {
+        return this.likes;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 }

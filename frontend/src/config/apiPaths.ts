@@ -25,8 +25,9 @@ export const searchPaths = {
 
 export const homePagePaths = {
   displayPagePath: "/photo/home/page",
+  toggleLikePath: "/photo/likeToggle"
 };
 
 export const commentPaths = {
-  addComment: "/comment/add",
+  addCommentPath: "/comment/add",
 };

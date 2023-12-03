@@ -1,6 +1,7 @@
 import { SyntheticEvent, ChangeEvent } from "react";
 import { AlertColor } from "@mui/material";
 import { LoginRequestData, RegistrationRequestData } from "./api";
+import { Comment } from "./componentProps";
 
 export interface AuthContextInterface {
   isLoginFormSelected: boolean;
@@ -31,6 +32,7 @@ export interface ModalsContextInterface {
   areNotificationsOpen: boolean;
   isDrawerOpen: boolean;
   isDeleteModalOpen: boolean;
+  drawerData: Comment[];
   handleModalOpening: (props: ModalOpeningFunctionInterface) => void;
   handleBottomNavValueChange: (
     _e: SyntheticEvent,
@@ -39,7 +41,7 @@ export interface ModalsContextInterface {
   handleBottomNavValueClick: (newBottomNavValue: BottomNavValue) => void;
   handleModalClose: () => void;
   handleNotificationOpen: (newNotificationsState: boolean) => void;
-  handleDrawerOpen: (newDrawerState: boolean) => void;
+  handleDrawerOpen: (newDrawerState: boolean, data?: Comment[]) => void;
   handleDeleteModalOpening: (newDeleteModalState: boolean) => void;
   handleModalData: (data: string[]) => void;
 }

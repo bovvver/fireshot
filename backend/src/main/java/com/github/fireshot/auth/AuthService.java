@@ -70,6 +70,7 @@ public class AuthService {
         String deleteJwtCookie = destroyCookie("jwt-token");
         String deleteRefreshCookie = destroyCookie("refresh-token");
         String deleteLoggedUser = destroyCookie("logged-user");
+        String deleteNickname = destroyCookie("nickname");
 
         ResponseMapDTO response = new ResponseMapDTO(HttpStatus.OK.value(), "Logged out.");
 
@@ -77,6 +78,7 @@ public class AuthService {
                 .header(HttpHeaders.SET_COOKIE, deleteJwtCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteRefreshCookie)
                 .header(HttpHeaders.SET_COOKIE, deleteLoggedUser)
+                .header(HttpHeaders.SET_COOKIE, deleteNickname)
                 .body(response);
     }
 

@@ -91,6 +91,14 @@ public class User implements UserDetails {
     @JsonIgnore
     private int passwordExp = 30;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_likes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "photo_id"))
+    @JsonIgnore
+    private Set<Photo> likedPhotos;
+
     // TODO: private List<Notification> notifications;
 
     /**
@@ -117,6 +125,7 @@ public class User implements UserDetails {
         this.expired = expired;
         this.locked = locked;
         this.enabled = enabled;
+        this.likedPhotos = new HashSet<>();
     }
 
     /**

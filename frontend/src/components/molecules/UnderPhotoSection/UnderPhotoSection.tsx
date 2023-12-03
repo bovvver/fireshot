@@ -15,21 +15,40 @@ import PhotoComment from "@components/atoms/PhotoComment/PhotoComment";
 import PhotoDate from "@components/atoms/PhotoDate/PhotoDate";
 import { useModals, useToast } from "@hooks/contextHooks";
 import { StyledInput } from "./UnderPhotoSection.styles";
-import { executeAddingComment } from "@api/HomePageService";
-import { CommentDTO } from "@customTypes/api";
+import { executeAddingComment, executeLikeToggle } from "@api/HomePageService";
+import { CommentDTO, LikeDTO } from "@customTypes/api";
 import { UnderPhotoSectionProps } from "@customTypes/componentProps";
+import colors from "@styles/colorTheme";
 
 const UnderPhotoSection = ({ post }: UnderPhotoSectionProps) => {
   const [comment, setComment] = useState("");
+  const [likesCounter, setLikesCounter] = useState(post.likes);
+  const [liked, setLiked] = useState(post.liked);
   const { handleDrawerOpen } = useModals();
   const { handleToastOpening } = useToast();
 
-  const { id, likes, owner, description, date, comments } = post;
-  const { author: firstCommentAuthor, content: firstCommentContent } =
-    comments[0];
+  const { id, owner, description, date, comments } = post;
+
+  const handleLike = async () => {
+    const likeDTO: LikeDTO = {
+      photoId: id,
+      isLiking: liked,
+    };
+
+    try {
+      await executeLikeToggle(likeDTO);
+
+      setLiked((prevState) => !prevState);
+
+      if (liked) setLikesCounter((prevState) => prevState - 1);
+      else setLikesCounter((prevState) => prevState + 1);
+    } catch (e) {
+      handleToastOpening("Couldn't like photo. Please try again.", "error", e);
+    }
+  };
 
   const openDrawer = () => {
-    handleDrawerOpen(true);
+    handleDrawerOpen(true, comments);
   };
 
   const sendComment = async () => {
@@ -59,10 +78,10 @@ const UnderPhotoSection = ({ post }: UnderPhotoSectionProps) => {
   return (
     <>
       <Box>
-        <IconButton>
-          <WhatshotIcon />
+        <IconButton onClick={handleLike}>
+          <WhatshotIcon sx={{ color: liked ? colors.green : colors.white }} />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={openDrawer}>
           <ChatBubbleOutlineIcon />
         </IconButton>
         <IconButton>
@@ -70,7 +89,7 @@ const UnderPhotoSection = ({ post }: UnderPhotoSectionProps) => {
         </IconButton>
       </Box>
       <Box sx={{ px: 1 }}>
-        <LikeStats likes={likes} />
+        <LikeStats likes={likesCounter} />
         <PhotoComment nickname={owner} description={description} />
         {comments.length !== 0 ? (
           <>
@@ -85,8 +104,8 @@ const UnderPhotoSection = ({ post }: UnderPhotoSectionProps) => {
               See all comments
             </Link>
             <PhotoComment
-              nickname={firstCommentAuthor}
-              description={firstCommentContent}
+              nickname={comments[0].author}
+              description={comments[0].content}
             />
           </>
         ) : null}
