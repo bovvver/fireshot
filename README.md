@@ -9,7 +9,8 @@ Full-stack <strong>educational</strong> project imitating <strong>Instagram.</st
 
 
 ## Preview
-https://github.com/MemeeMaster/fireshot/assets/85307370/4b2d9165-a353-49e2-9a1e-83a2dab649b5
+https://github.com/MemeeMaster/fireshot/assets/85307370/fab4a009-dc43-4f44-9f9d-bd9ef2f2f997
+
 ## Gallery
 <img src="https://github.com/MemeeMaster/fireshot/assets/85307370/b994738b-af54-45de-8fd5-835e3be96d3a" width="24%"></img> <img src="https://github.com/MemeeMaster/fireshot/assets/85307370/ca1fcc4d-ed52-473c-945c-4fbad25437c6" width="24%"></img> <img src="https://github.com/MemeeMaster/fireshot/assets/85307370/79ebcc93-64e6-4895-8044-7828d8dfcc7b" width="24%"></img><img src="https://github.com/MemeeMaster/fireshot/assets/85307370/2d14090e-e4b0-42d8-8e6c-68d1f9977a7b" width="24%"></img>
 
